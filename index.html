@@ -176,13 +176,15 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 input:checked + .toggle-slider { background-color: var(--purple); border-color: var(--purple); }
 input:checked + .toggle-slider:before { transform: translateX(20px); background-color: #fff; }
 
-.att-day-cell { text-align: center; min-width: 30px; font-size: 11px; padding: 4px !important;}
-.att-mark { font-weight: bold; }
-.att-mark.present { color: var(--teal); }
-.att-mark.absent { color: var(--red); }
-.att-mark.leave { color: var(--orange); }
-.att-mark.sick { color: var(--blue); }
-.att-mark.holiday { color: var(--text3); }
+/* ===== ATTENDANCE REPORT CALENDAR VIEW ===== */
+.att-cell { text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border); min-width: 28px; padding: 4px 6px !important; font-size: 11px;}
+.att-sat { background-color: rgba(139,103,240,.08) !important; }
+.att-sun { background-color: rgba(240,90,90,.08) !important; }
+.att-hol { background-color: var(--surface3) !important; }
+.sticky-col-1 { position: sticky; left: 0; background: var(--surface2); z-index: 2; width: 40px; text-align: center; border-right: 1px solid var(--border); }
+.sticky-col-2 { position: sticky; left: 40px; background: var(--surface2); z-index: 2; min-width: 150px; border-right: 1px solid var(--border); }
+tbody .sticky-col-1, tbody .sticky-col-2 { background: var(--surface) !important; z-index: 1;}
+tbody tr:hover .sticky-col-1, tbody tr:hover .sticky-col-2 { background: var(--surface2) !important; }
 
 /* ===== PORTFOLIO GALLERY ===== */
 .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
@@ -221,7 +223,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
 /* ===== PRINT STYLES ===== */
 .print-signatures { display: none; justify-content: space-around; margin-top: 50px; text-align: center; color: var(--text); }
 @media print {
-  @page { size: landscape; margin: 1cm; }
+  @page { size: landscape; margin: 10mm; }
   body { background: white; color: black; }
   .sidebar, .topbar, .btn, .toolbar, .page-header p, .toast-wrap { display: none !important; }
   .main { overflow: visible; background: white; }
@@ -229,15 +231,19 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
   .page { display: none !important; }
   #page-summary.active, #page-monthly.active, #page-attendance-report.active { display: block !important; }
   .table-wrap { border: 1px solid #ccc; overflow: visible !important; }
+  .table-wrap table { font-size: 11px !important; }
   table th { background: #eee !important; color: black; border-bottom: 1px solid #ccc; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   table td { border-bottom: 1px solid #ccc; color: black; }
   .grade-circle { border: 1px solid black; background: transparent !important; color: black !important; }
   .badge { border: 1px solid #999; background: transparent !important; color: black !important; }
-  .print-signatures { display: flex !important; }
-  .att-mark.present { color: #000; }
-  .att-mark.absent { color: #d32f2f; }
-  .att-mark.leave { color: #f57c00; }
-  .att-mark.sick { color: #1976d2; }
+  .print-signatures { display: flex !important; margin-top: 30px; }
+  
+  /* Print overrides for Attendance */
+  .sticky-col-1, .sticky-col-2 { position: static !important; }
+  .att-sat { background-color: #f3e5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .att-sun { background-color: #ffebee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .att-hol { background-color: #eeeeee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .att-cell { padding: 2px !important; min-width: 16px; border-color: #ddd; }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -276,7 +282,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
         <span class="nav-icon">📋</span><span>สรุปคะแนน</span>
       </div>
       <div class="nav-item" onclick="navigate('monthly',this)" data-page="monthly">
-        <span class="nav-icon">📅</span><span>รายงานส่งงาน</span>
+        <span class="nav-icon">📝</span><span>รายงานส่งงาน</span>
       </div>
       
       <div class="nav-group-label">จัดการ</div>
@@ -292,7 +298,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
         <span class="nav-icon">✅</span><span>เช็คชื่อเข้าเรียน</span>
       </div>
       <div class="nav-item" onclick="navigate('attendance-report',this)" data-page="attendance-report">
-        <span class="nav-icon">📈</span><span>รายงานการเข้าเรียน</span>
+        <span class="nav-icon">📅</span><span>รายงานการเข้าเรียน</span>
       </div>
 
       <div class="nav-group-label">งาน & คะแนน</div>
@@ -522,7 +528,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
             </label>
             <div>
               <div style="font-weight:500; color:var(--text);">กำหนดเป็นวันหยุดพิเศษ / ไม่มีคาบเรียน</div>
-              <div style="font-size:11px; color:var(--text3);">หากเปิดใช้งาน จะไม่นำไปคิดสถิติการเข้าเรียนของนักเรียน</div>
+              <div style="font-size:11px; color:var(--text3);">หากเปิดใช้งาน จะซ่อนรายชื่อ และจะถูกนับเป็น "มาเรียนครบ" ในหน้ารายงาน</div>
             </div>
             <div style="flex:1;">
               <input type="text" class="input" id="attHolidayNote" placeholder="ระบุเหตุผล (เช่น วันหยุดนักขัตฤกษ์, กีฬาสี)" style="display:none;">
@@ -557,8 +563,8 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
       <div class="page" id="page-attendance-report">
         <div class="page-header">
           <div class="page-header-left">
-            <h1 id="attReportTitle">📈 รายงานการเข้าเรียน</h1>
-            <p>สรุปสถิติเวลาเรียนประจำเดือน</p>
+            <h1 id="attReportTitle">📅 รายงานการเข้าเรียน</h1>
+            <p>สรุปสถิติเวลาเรียนประจำเดือน (แสดงทุกวัน)</p>
           </div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์รายงาน / PDF</button>
@@ -581,10 +587,10 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
         </div>
 
         <div id="attReportContent" style="display:none; margin-top:16px;">
-          <div class="stat-grid" id="attReportStats"></div>
+          <div class="stat-grid" id="attReportStats" style="grid-template-columns: repeat(4, 1fr);"></div>
           
           <div class="card" style="padding:0; overflow:hidden;">
-            <div class="table-wrap" style="border:none; border-radius:0; max-height: 600px;">
+            <div class="table-wrap" style="border:none; border-radius:0; max-height: 600px; overflow-x: auto;">
               <table style="font-size:12px;">
                 <thead><tr id="attReportHeader"></tr></thead>
                 <tbody id="attReportBody"></tbody>
@@ -593,12 +599,16 @@ input:checked + .toggle-slider:before { transform: translateX(20px); background-
           </div>
 
           <!-- Legend -->
-          <div style="display:flex; gap:16px; margin-top:12px; font-size:11px; color:var(--text2); justify-content:center;">
+          <div style="display:flex; gap:16px; margin-top:12px; font-size:11px; color:var(--text2); justify-content:center; flex-wrap:wrap; align-items:center;">
             <div><span class="badge badge-teal" style="padding:2px 6px;">ม</span> = มาเรียน</div>
             <div><span class="badge badge-red" style="padding:2px 6px;">ข</span> = ขาดเรียน</div>
             <div><span class="badge badge-orange" style="padding:2px 6px;">ล</span> = ลากิจ</div>
             <div><span class="badge badge-blue" style="padding:2px 6px;">ป</span> = ลาป่วย</div>
-            <div><span class="badge badge-gray" style="padding:2px 6px;">-</span> = วันหยุด/ไม่มีเรียน</div>
+            <div><span class="badge" style="background:var(--surface3);color:var(--text3);padding:2px 6px;border:1px solid var(--border)">ห</span> = วันหยุดพิเศษ <b style="color:var(--teal)">(นับเป็นมา)</b></div>
+            <div style="display:flex; gap:8px; margin-left:10px;">
+              <div style="display:flex; align-items:center; gap:4px;"><div style="width:14px; height:14px; background:rgba(139,103,240,.15); border:1px solid rgba(139,103,240,.3); border-radius:3px;"></div> วันเสาร์</div>
+              <div style="display:flex; align-items:center; gap:4px;"><div style="width:14px; height:14px; background:rgba(240,90,90,.15); border:1px solid rgba(240,90,90,.3); border-radius:3px;"></div> วันอาทิตย์</div>
+            </div>
           </div>
         </div>
 
@@ -880,20 +890,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzwlFu0mPOKtr-t0lEl-CaO
 // ===== DATA STORE =====
 const DB = {
   settings: {
-    ratio_work: 70, // สัดส่วนคะแนนเก็บ
-    ratio_final: 30, // สัดส่วนคะแนนสอบ
-    semester: 1,
-    year: 2568,
-    director_name: '',
-    academic_name: '',
-    teacher_name: 'ครูลลิตา สังข์เพชร',
+    ratio_work: 70, ratio_final: 30, semester: 1, year: 2568,
+    director_name: '', academic_name: '', teacher_name: 'ครูลลิตา สังข์เพชร',
     grade_thresholds: { '4': 80, '3.5': 75, '3': 70, '2.5': 65, '2': 60, '1.5': 55, '1': 50, '0': 0 }
   },
-  classes: [],
-  assignments: [],
-  students: [],
-  scores: {},
-  attendance: {} // โครงสร้าง: { classId: { "YYYY-MM-DD": { isHoliday: false, note: "", records: { studentId: "present|absent|leave|sick" } } } }
+  classes: [], assignments: [], students: [], scores: {}, attendance: {} 
 };
 
 const artEmojis = ['🎨','🖌️','✏️','🖼️','🎭','🖍️','🎪','🎬','🎯','✨'];
@@ -908,10 +909,7 @@ async function fetchAPI(action) {
 
 async function postAPI(action, payload) {
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action, payload })
-    });
+    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action, payload }) });
     return await res.json();
   } catch (err) { console.error(err); return { error: err.message }; }
 }
@@ -924,71 +922,69 @@ window.onload = async () => {
   const data = await fetchAPI('getAllData');
   
   if (data.error) {
-    toast('ดึงข้อมูลไม่ได้ ใช้งานแบบ Offline ชั่วคราว', 'warning');
-    // Mock data for demo
-    DB.classes = [{id:'CLS1',name:'ป.1/1',level:1,room:1}];
-    DB.students = [
-        {id:'S1',classId:'CLS1',no:1,title:'ด.ช.',firstName:'สมชาย',lastName:'ใจดี'},
-        {id:'S2',classId:'CLS1',no:2,title:'ด.ญ.',firstName:'สมหญิง',lastName:'รักเรียน'}
-    ];
-  } else {
-    DB.classes = data.classes || [];
-    DB.students = data.students || [];
-    DB.students.forEach(s => s.no = parseInt(s.no));
-    DB.classes.forEach(c => { c.level = parseInt(c.level); c.room = parseInt(c.room); });
-    
-    DB.assignments = (data.assignments || []).map(a => ({
-      ...a,
-      maxScore: parseInt(a.maxScore),
-      active: a.active === 'TRUE' || a.active === true
-    }));
-    
-    DB.scores = {};
-    if (data.scores) {
-      data.scores.forEach(row => {
-        if (!DB.scores[row.student_id]) DB.scores[row.student_id] = {};
-        DB.scores[row.student_id][row.assignment_id] = { raw: parseInt(row.raw) || 0, url: row.url || '', note: row.note || '' };
-      });
-    }
+    toast('ดึงข้อมูลไม่ได้ ตรวจสอบการเชื่อมต่อ Apps Script', 'error');
+    document.getElementById('dashSubtitle').innerHTML = `<span style="color:var(--red)">❌ เชื่อมต่อล้มเหลว</span>`;
+    return;
+  } 
+  
+  DB.classes = data.classes || [];
+  DB.students = data.students || [];
+  DB.students.forEach(s => s.no = parseInt(s.no));
+  DB.classes.forEach(c => { c.level = parseInt(c.level); c.room = parseInt(c.room); });
+  
+  DB.assignments = (data.assignments || []).map(a => ({
+    ...a, maxScore: parseInt(a.maxScore), active: a.active === 'TRUE' || a.active === true
+  }));
+  
+  DB.scores = {};
+  if (data.scores) {
+    data.scores.forEach(row => {
+      if (!DB.scores[row.student_id]) DB.scores[row.student_id] = {};
+      DB.scores[row.student_id][row.assignment_id] = { raw: parseInt(row.raw) || 0, url: row.url || '', note: row.note || '' };
+    });
+  }
 
-    // Load Attendance Data if exists (simulated mapping from flat array to object)
-    DB.attendance = {};
-    if (data.attendance) {
-       data.attendance.forEach(row => {
-           if (!DB.attendance[row.class_id]) DB.attendance[row.class_id] = {};
-           if (!DB.attendance[row.class_id][row.date]) {
-               DB.attendance[row.class_id][row.date] = { 
-                   isHoliday: row.is_holiday === 'TRUE' || row.is_holiday === true, 
-                   note: row.note || '', 
-                   records: {} 
-               };
-           }
-           if (row.student_id && row.status) {
-               DB.attendance[row.class_id][row.date].records[row.student_id] = row.status;
-           }
-       });
-    }
+  // Load Attendance Data
+  DB.attendance = {};
+  if (data.attendance) {
+     data.attendance.forEach(row => {
+         // date format should be YYYY-MM-DD for consistency
+         let dateStr = row.date; 
+         if (dateStr && dateStr.includes('T')) dateStr = dateStr.split('T')[0];
+         
+         if (!DB.attendance[row.class_id]) DB.attendance[row.class_id] = {};
+         if (!DB.attendance[row.class_id][dateStr]) {
+             DB.attendance[row.class_id][dateStr] = { 
+                 isHoliday: row.is_holiday === 'TRUE' || row.is_holiday === true, 
+                 note: row.note || '', 
+                 records: {} 
+             };
+         }
+         if (row.student_id && row.status) {
+             DB.attendance[row.class_id][dateStr].records[row.student_id] = row.status;
+         }
+     });
+  }
 
-    if (data.settings && data.settings.length > 0) {
-      const setObj = {};
-      data.settings.forEach(row => { setObj[row.key] = row.value; });
+  if (data.settings && data.settings.length > 0) {
+    const setObj = {};
+    data.settings.forEach(row => { setObj[row.key] = row.value; });
 
-      DB.settings.director_name = setObj.director_name || '';
-      DB.settings.academic_name = setObj.academic_name || '';
-      DB.settings.teacher_name = setObj.teacher_name || '';
-      DB.settings.semester = parseInt(setObj.semester) || 1;
-      DB.settings.year = parseInt(setObj.year) || 2568;
-      DB.settings.ratio_work = parseInt(setObj.ratio_work) || 70;
-      DB.settings.ratio_final = parseInt(setObj.ratio_final) || 30;
+    DB.settings.director_name = setObj.director_name || '';
+    DB.settings.academic_name = setObj.academic_name || '';
+    DB.settings.teacher_name = setObj.teacher_name || '';
+    DB.settings.semester = parseInt(setObj.semester) || 1;
+    DB.settings.year = parseInt(setObj.year) || 2568;
+    DB.settings.ratio_work = parseInt(setObj.ratio_work) || 70;
+    DB.settings.ratio_final = parseInt(setObj.ratio_final) || 30;
 
-      if(setObj.g4) DB.settings.grade_thresholds['4'] = parseInt(setObj.g4);
-      if(setObj.g3_5) DB.settings.grade_thresholds['3.5'] = parseInt(setObj.g3_5);
-      if(setObj.g3) DB.settings.grade_thresholds['3'] = parseInt(setObj.g3);
-      if(setObj.g2_5) DB.settings.grade_thresholds['2.5'] = parseInt(setObj.g2_5);
-      if(setObj.g2) DB.settings.grade_thresholds['2'] = parseInt(setObj.g2);
-      if(setObj.g1_5) DB.settings.grade_thresholds['1.5'] = parseInt(setObj.g1_5);
-      if(setObj.g1) DB.settings.grade_thresholds['1'] = parseInt(setObj.g1);
-    }
+    if(setObj.g4) DB.settings.grade_thresholds['4'] = parseInt(setObj.g4);
+    if(setObj.g3_5) DB.settings.grade_thresholds['3.5'] = parseInt(setObj.g3_5);
+    if(setObj.g3) DB.settings.grade_thresholds['3'] = parseInt(setObj.g3);
+    if(setObj.g2_5) DB.settings.grade_thresholds['2.5'] = parseInt(setObj.g2_5);
+    if(setObj.g2) DB.settings.grade_thresholds['2'] = parseInt(setObj.g2);
+    if(setObj.g1_5) DB.settings.grade_thresholds['1.5'] = parseInt(setObj.g1_5);
+    if(setObj.g1) DB.settings.grade_thresholds['1'] = parseInt(setObj.g1);
   }
 
   document.getElementById('setting_director').value = DB.settings.director_name;
@@ -1010,7 +1006,7 @@ window.onload = async () => {
   populateClassSelects();
   renderDashboard();
   updateTotalRatio();
-  if(!data.error) toast('โหลดข้อมูลสำเร็จ ✨', 'success');
+  toast('โหลดข้อมูลสำเร็จ ✨', 'success');
   
   const todayStr = new Date().toISOString().split('T')[0];
   const dueDateInput = document.getElementById('new_assign_due');
@@ -1142,6 +1138,7 @@ function navigate(page, navEl) {
 }
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => { m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }); });
@@ -1152,17 +1149,17 @@ function toast(msg, type='info') {
   const icons = { success:'✅', error:'❌', info:'💡', warning:'⚠️' };
   el.innerHTML = `<span>${icons[type]||'ℹ️'}</span> ${msg}`;
   document.getElementById('toastWrap').appendChild(el);
-  setTimeout(() => el.remove(), 3000);
+  setTimeout(() => el.remove(), 4000);
 }
 
-// ===== DASHBOARD =====
+// ===== RENDER DASHBOARD =====
 function renderDashboard() {
   const semStr = `ภาคเรียนที่ ${DB.settings.semester}/${DB.settings.year}`;
-  document.getElementById('dashSubtitle').textContent = `${semStr} · รายวิชาศิลปะ`;
+  document.getElementById('dashSubtitle').textContent = `${semStr} · รายวิชาศิลปะ ป.1–ป.6`;
   document.getElementById('displaySemester').textContent = `ภาคเรียน ${DB.settings.semester}/${DB.settings.year}`;
 
   const pb = document.getElementById('progressBars');
-  const colors = ['var(--purple)','var(--teal)','var(--orange)','var(--blue)','var(--amber)','var(--red)'];
+  const colors = ['var(--purple)','var(--teal)','var(--orange)','var(--amber)','var(--red)'];
   pb.innerHTML = DB.classes.map((cls,i) => {
     const pct = classProgress(cls.id);
     const col = pct < 60 ? 'var(--red)' : pct < 80 ? 'var(--orange)' : colors[i%colors.length];
@@ -1176,7 +1173,7 @@ function renderDashboard() {
   }).join('');
 }
 
-// ===== CLASSES & STUDENTS =====
+// ===== CLASSES =====
 function renderClasses() {
   document.getElementById('classesTable').innerHTML = DB.classes.map(cls => {
     const pct = classProgress(cls.id);
@@ -1205,18 +1202,18 @@ async function addClass() {
   
   toast('กำลังบันทึกข้อมูล...', 'info');
   const res = await postAPI('saveClass', newClass);
-  if(res && res.success) toast('เพิ่มห้องเรียนสำเร็จ', 'success');
+  if(res.success) toast('เพิ่มห้องเรียนสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
 async function deleteClass(id) {
   if (!confirm('ลบห้องเรียนนี้?')) return;
   DB.classes = DB.classes.filter(c => c.id !== id); renderClasses();
-  populateClassSelects();
   toast('กำลังลบข้อมูล...', 'info');
-  await postAPI('deleteRow', { sheetName: 'Classes', idColumn: 'id', idValue: id });
-  toast('ลบห้องเรียนแล้ว', 'success');
+  const res = await postAPI('deleteRow', { sheetName: 'Classes', idColumn: 'id', idValue: id });
+  if(res.success) toast('ลบห้องเรียนแล้ว', 'success'); else toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
+// ===== STUDENTS =====
 function renderStudents() {
   populateClassSelects();
   const search = document.getElementById('studentSearch')?.value?.toLowerCase() || '';
@@ -1248,13 +1245,15 @@ async function addStudent() {
   closeModal('addStudentModal'); renderStudents();
   toast('กำลังบันทึกข้อมูล...', 'info');
   const res = await postAPI('saveStudent', newStu);
-  if(res && res.success) toast('เพิ่มนักเรียนสำเร็จ', 'success');
+  if(res.success) toast('เพิ่มนักเรียนสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
 async function deleteStudent(id) {
   if (!confirm('ลบนักเรียนนี้?')) return;
   DB.students = DB.students.filter(s => s.id !== id); renderStudents();
-  await postAPI('deleteRow', { sheetName: 'Students', idColumn: 'id', idValue: id });
+  toast('กำลังลบ...', 'info');
+  const res = await postAPI('deleteRow', { sheetName: 'Students', idColumn: 'id', idValue: id });
+  if(!res.success) toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
 function openImportStudentModal() { document.getElementById('import_stu_data').value = ''; openModal('importStudentModal'); }
@@ -1280,32 +1279,24 @@ async function importStudents() {
   if (rowsToAppend.length > 0) {
     toast(`กำลังนำเข้านักเรียน ${rowsToAppend.length} คน...`, 'info');
     const res = await postAPI('importStudentsBulk', rowsToAppend);
-    if(res && res.success) toast('นำเข้าข้อมูลเรียบร้อย ✨', 'success');
+    if(res.success) toast('นำเข้าข้อมูลเรียบร้อย ✨', 'success'); else toast('เกิดข้อผิดพลาด: '+res.error, 'error');
   }
 }
 
 function showStudentProfile(studentId) {
   const s = getStudent(studentId); if (!s) return;
-  const sc = calcStudentScore(studentId), cls = getClass(s.classId);
-  const assigns = DB.assignments.filter(a => a.classId === 'ALL' || a.classId === s.classId);
+  const sc = calcStudentScore(studentId), cls = getClass(s.classId), assigns = DB.assignments.filter(a => a.classId === 'ALL' || a.classId === s.classId);
 
   openModal('studentProfileModal');
   document.getElementById('studentProfileContent').innerHTML = `
-    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
-        <div style="width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--teal));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:#fff">${s.firstName[0]}</div>
-        <div>
-            <h2 style="font-size:18px;margin-bottom:4px">${studentFullName(s)}</h2>
-            <p style="color:var(--text3);font-size:13px">ห้อง ${cls?.name||'-'} · เลขที่ ${s.no}</p>
-        </div>
-        <div style="margin-left:auto;text-align:center">${getGradeCircle(sc.grade)}<div style="font-size:10px;color:var(--text3);margin-top:4px">เกรด</div></div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)"><div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,var(--purple),var(--teal));display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff">${s.firstName[0]}</div><div style="flex:1"><h2>${studentFullName(s)}</h2><p style="color:var(--text3)">ห้อง ${cls?.name||'-'} · เลขที่ ${s.no}</p></div><div style="text-align:center">${getGradeCircle(sc.grade)}<div style="font-size:11px;color:var(--text3);margin-top:4px">เกรด</div></div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      <div class="card card-sm" style="text-align:center"><div style="color:var(--purple);font-size:24px;font-weight:600">${sc.scaled}</div><div style="font-size:11px;color:var(--text2)">คะแนนรวม /${sc.maxDisplay}</div></div>
+      <div class="card card-sm" style="text-align:center"><div style="color:var(--teal);font-size:24px;font-weight:600">${sc.totalPct}%</div><div style="font-size:11px;color:var(--text2)">เปอร์เซ็นต์รวม</div></div>
+      <div class="card card-sm" style="text-align:center"><div style="color:var(--amber);font-size:24px;font-weight:600">${sc.workScaled}</div><div style="font-size:11px;color:var(--text2)">คะแนนเก็บ /${DB.settings.ratio_work}</div></div>
+      <div class="card card-sm" style="text-align:center"><div style="color:var(--red);font-size:24px;font-weight:600">${sc.finalScaled}</div><div style="font-size:11px;color:var(--text2)">ปลายภาค /${DB.settings.ratio_final}</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px">
-      <div class="card card-sm" style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--purple)">${sc.scaled}</div><div style="font-size:11px;color:var(--text2)">คะแนนรวม /${sc.maxDisplay}</div></div>
-      <div class="card card-sm" style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--teal)">${sc.totalPct}%</div><div style="font-size:11px;color:var(--text2)">เปอร์เซ็นต์</div></div>
-      <div class="card card-sm" style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--amber)">${sc.workScaled}</div><div style="font-size:11px;color:var(--text2)">เก็บ /${DB.settings.ratio_work}</div></div>
-      <div class="card card-sm" style="text-align:center"><div style="font-size:20px;font-weight:700;color:var(--red)">${sc.finalScaled}</div><div style="font-size:11px;color:var(--text2)">สอบ /${DB.settings.ratio_final}</div></div>
-    </div>
-    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">รายละเอียดแต่ละชิ้นงาน/สอบ</div>
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">รายละเอียดชิ้นงาน/สอบ</div>
     <div class="table-wrap">
       <table>
         <thead><tr><th>งาน/สอบ</th><th>หมวด</th><th>คะแนนดิบ</th><th>%</th><th>ผลงาน</th></tr></thead>
@@ -1361,14 +1352,15 @@ async function addAssignment() {
   closeModal('addAssignModal'); renderAssignments();
   toast('กำลังบันทึกชิ้นงาน...', 'info');
   const res = await postAPI('saveAssignment', newAssign);
-  if(res && res.success) toast('เพิ่มชิ้นงานสำเร็จ', 'success');
+  if(res.success) toast('เพิ่มชิ้นงานสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
 async function deleteAssign(id) {
   if (!confirm('ลบรายการนี้?')) return;
   DB.assignments = DB.assignments.filter(a => a.id !== id); renderAssignments();
-  await postAPI('deleteRow', { sheetName: 'Assignments', idColumn: 'id', idValue: id });
-  toast('ลบสำเร็จ', 'success');
+  toast('กำลังลบ...', 'info');
+  const res = await postAPI('deleteRow', { sheetName: 'Assignments', idColumn: 'id', idValue: id });
+  if(!res.success) toast('เกิดข้อผิดพลาด: '+res.error, 'error');
 }
 
 // ===== GRADING =====
@@ -1381,6 +1373,7 @@ function loadGradingAssignments() {
   if (!classId) { ga.innerHTML = '<option>— เลือกชิ้นงาน —</option>'; return; }
   ga.innerHTML = '<option value="">— เลือกชิ้นงาน / สอบ —</option>' + DB.assignments.filter(a => a.classId === 'ALL' || a.classId === classId).map(a => `<option value="${a.id}">${a.title} (เต็ม ${a.maxScore})</option>`).join('');
   document.getElementById('gradingTable').style.display = 'none'; document.getElementById('gradingEmpty').style.display = 'block';
+  document.getElementById('gradingInfo').style.display = 'none';
 }
 
 function loadGradingTable() {
@@ -1441,217 +1434,235 @@ async function saveAllScores() {
   if (scoresPayload.length === 0) return toast('ไม่มีคะแนนให้บันทึก', 'warning');
   toast('กำลังบันทึกคะแนน...', 'info');
   const res = await postAPI('saveScoreBulk', scoresPayload);
-  if(res && res.success) toast('บันทึกคะแนนสำเร็จ ✨', 'success'); else toast('บันทึกสำเร็จ (Offline Mode)', 'success');
+  if(res.success) toast('บันทึกคะแนนสำเร็จ ✨', 'success'); else toast('บันทึกไม่สำเร็จ: ' + res.error, 'error');
 }
 
-// ===== ATTENDANCE LOGIC =====
+// ===== ATTENDANCE (NEW) =====
 function initAttendance() {
   document.getElementById('attClass').innerHTML = '<option value="">— เลือกห้อง —</option>' + DB.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  const attDate = document.getElementById('attDate');
-  if(!attDate.value) attDate.value = new Date().toISOString().split('T')[0];
-  loadAttendanceList();
 }
 
 function toggleHolidayMode() {
-    const isHoliday = document.getElementById('attIsHoliday').checked;
-    const noteInput = document.getElementById('attHolidayNote');
-    const studentList = document.getElementById('attStudentListWrap');
-    
-    if (isHoliday) {
-        noteInput.style.display = 'block';
-        studentList.style.display = 'none';
-        noteInput.focus();
-    } else {
-        noteInput.style.display = 'none';
-        studentList.style.display = 'block';
-    }
+    const isHol = document.getElementById('attIsHoliday').checked;
+    document.getElementById('attHolidayNote').style.display = isHol ? 'block' : 'none';
+    document.getElementById('attStudentListWrap').style.display = isHol ? 'none' : 'block';
 }
 
 function loadAttendanceList() {
-  const date = document.getElementById('attDate').value;
-  const classId = document.getElementById('attClass').value;
-  
-  if (!date || !classId) {
-      document.getElementById('attEmpty').style.display = 'block';
-      document.getElementById('attContentWrap').style.display = 'none';
-      return;
-  }
-  
-  document.getElementById('attEmpty').style.display = 'none';
-  document.getElementById('attContentWrap').style.display = 'block';
-  
-  const existingRecord = DB.attendance[classId]?.[date];
-  const studs = DB.students.filter(s => s.classId === classId).sort((a,b) => a.no - b.no);
-  
-  // Restore Holiday state
-  const isHoliday = existingRecord?.isHoliday || false;
-  document.getElementById('attIsHoliday').checked = isHoliday;
-  document.getElementById('attHolidayNote').value = existingRecord?.note || '';
-  toggleHolidayMode();
+    const dateStr = document.getElementById('attDate').value;
+    const classId = document.getElementById('attClass').value;
+    const wrap = document.getElementById('attContentWrap');
+    const empty = document.getElementById('attEmpty');
 
-  // Render Students
-  document.getElementById('attTbody').innerHTML = studs.map(s => {
-      const status = existingRecord?.records?.[s.id] || 'present'; // default present if creating new
-      
-      const rName = `att_${s.id}`;
-      return `<tr>
-          <td style="color:var(--text3); text-align:center;">${s.no}</td>
-          <td style="font-weight:500;">${studentFullName(s)}</td>
-          <td>
-              <div class="att-status-group">
-                  <input type="radio" name="${rName}" id="${rName}_p" class="att-radio" value="present" ${status==='present'?'checked':''}>
-                  <label for="${rName}_p" class="att-label">มา</label>
-                  
-                  <input type="radio" name="${rName}" id="${rName}_a" class="att-radio" value="absent" ${status==='absent'?'checked':''}>
-                  <label for="${rName}_a" class="att-label">ขาด</label>
-                  
-                  <input type="radio" name="${rName}" id="${rName}_l" class="att-radio" value="leave" ${status==='leave'?'checked':''}>
-                  <label for="${rName}_l" class="att-label">ลา</label>
-                  
-                  <input type="radio" name="${rName}" id="${rName}_s" class="att-radio" value="sick" ${status==='sick'?'checked':''}>
-                  <label for="${rName}_s" class="att-label">ป่วย</label>
-              </div>
-          </td>
-      </tr>`;
-  }).join('');
+    if (!dateStr || !classId) {
+        wrap.style.display = 'none'; empty.style.display = 'block'; return;
+    }
+    
+    wrap.style.display = 'block'; empty.style.display = 'none';
+
+    // Load saved data if exists
+    let savedData = null;
+    if (DB.attendance[classId] && DB.attendance[classId][dateStr]) {
+        savedData = DB.attendance[classId][dateStr];
+    }
+
+    if (savedData && savedData.isHoliday) {
+        document.getElementById('attIsHoliday').checked = true;
+        document.getElementById('attHolidayNote').value = savedData.note || '';
+        toggleHolidayMode();
+    } else {
+        document.getElementById('attIsHoliday').checked = false;
+        document.getElementById('attHolidayNote').value = '';
+        toggleHolidayMode();
+    }
+
+    // Render Student List for Attendance
+    const studs = DB.students.filter(s => s.classId === classId).sort((x,y) => x.no - y.no);
+    document.getElementById('attTbody').innerHTML = studs.map(s => {
+        let st = savedData && savedData.records ? savedData.records[s.id] || '' : '';
+        return `
+        <tr>
+            <td style="color:var(--text3); text-align:center;">${s.no}</td>
+            <td style="font-weight:500">${studentFullName(s)}</td>
+            <td>
+                <div class="att-status-group">
+                    <input type="radio" name="att_${s.id}" id="p_${s.id}" value="present" class="att-radio" ${st==='present'?'checked':''}>
+                    <label for="p_${s.id}" class="att-label">มา</label>
+                    
+                    <input type="radio" name="att_${s.id}" id="a_${s.id}" value="absent" class="att-radio" ${st==='absent'?'checked':''}>
+                    <label for="a_${s.id}" class="att-label">ขาด</label>
+                    
+                    <input type="radio" name="att_${s.id}" id="l_${s.id}" value="leave" class="att-radio" ${st==='leave'?'checked':''}>
+                    <label for="l_${s.id}" class="att-label">ลา</label>
+
+                    <input type="radio" name="att_${s.id}" id="s_${s.id}" value="sick" class="att-radio" ${st==='sick'?'checked':''}>
+                    <label for="s_${s.id}" class="att-label">ป่วย</label>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
 }
 
 function markAllAttendance(status) {
-    const radios = document.querySelectorAll(`.att-radio[value="${status}"]`);
-    radios.forEach(r => r.checked = true);
+    const classId = document.getElementById('attClass').value;
+    if(!classId) return;
+    const studs = DB.students.filter(s => s.classId === classId);
+    studs.forEach(s => {
+        const radio = document.getElementById(`${status.charAt(0)}_${s.id}`);
+        if(radio) radio.checked = true;
+    });
 }
 
 async function saveAttendance() {
-    const date = document.getElementById('attDate').value;
+    const dateStr = document.getElementById('attDate').value;
     const classId = document.getElementById('attClass').value;
-    if (!date || !classId) return toast('กรุณาเลือกวันที่และห้องเรียน', 'error');
+    if (!dateStr || !classId) return toast('กรุณาเลือกวันที่และห้องเรียน', 'warning');
 
     const isHoliday = document.getElementById('attIsHoliday').checked;
     const note = document.getElementById('attHolidayNote').value.trim();
-
-    if (!DB.attendance[classId]) DB.attendance[classId] = {};
     
-    const record = {
-        isHoliday: isHoliday,
-        note: note,
-        records: {}
-    };
+    let recordObj = { isHoliday, note, records: {} };
 
     if (!isHoliday) {
         const studs = DB.students.filter(s => s.classId === classId);
         studs.forEach(s => {
-            const checked = document.querySelector(`input[name="att_${s.id}"]:checked`);
-            if (checked) {
-                record.records[s.id] = checked.value;
-            }
+            const selected = document.querySelector(`input[name="att_${s.id}"]:checked`);
+            if (selected) recordObj.records[s.id] = selected.value;
         });
+        if(Object.keys(recordObj.records).length === 0) return toast('ยังไม่ได้เช็คชื่อนักเรียนเลย', 'warning');
     }
 
-    DB.attendance[classId][date] = record;
+    // Update local DB
+    if (!DB.attendance[classId]) DB.attendance[classId] = {};
+    DB.attendance[classId][dateStr] = recordObj;
+
     toast('กำลังบันทึกการเข้าเรียน...', 'info');
-    
-    // Simulate API Payload
-    const payload = { classId, date, record };
-    const res = await postAPI('saveAttendance', payload); // Assume you'll implement this in GAS
-    
-    toast('บันทึกการเช็คชื่อสำเร็จ ✅', 'success');
+    const payload = { classId, date: dateStr, record: recordObj };
+    const res = await postAPI('saveAttendance', payload);
+    if(res.success) toast('บันทึกการเข้าเรียนสำเร็จ ✨', 'success');
+    else toast('บันทึกไม่สำเร็จ: ' + res.error, 'error');
 }
 
-// ===== ATTENDANCE REPORT =====
+// ===== ATTENDANCE REPORT (CALENDAR VIEW) =====
 function initAttendanceReport() {
-    const rm = document.getElementById('attReportMonth');
-    if (!rm.value) { const d = new Date(); rm.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
-    
-    document.getElementById('attReportClass').innerHTML = '<option value="">— เลือกห้อง —</option>' + DB.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    renderAttendanceReport();
+  const rm = document.getElementById('attReportMonth');
+  if (!rm.value) { 
+      const d = new Date(); 
+      rm.value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; 
+  }
+  populateClassSelects(); 
+  renderAttendanceReport();
 }
 
 function renderAttendanceReport() {
-    const monthVal = document.getElementById('attReportMonth').value;
-    const classId = document.getElementById('attReportClass').value;
-    
-    if (!monthVal || !classId) {
-        document.getElementById('attReportEmpty').style.display = 'block';
-        document.getElementById('attReportContent').style.display = 'none';
-        return;
+  const classId = document.getElementById('attReportClass').value;
+  const monthVal = document.getElementById('attReportMonth').value;
+  const reportHeader = document.getElementById('attReportHeader');
+  const reportBody = document.getElementById('attReportBody');
+  const reportContent = document.getElementById('attReportContent');
+  const emptyState = document.getElementById('attReportEmpty');
+  const statsWrap = document.getElementById('attReportStats');
+
+  if (!classId || !monthVal) {
+    reportContent.style.display = 'none'; emptyState.style.display = 'block'; return;
+  }
+
+  reportContent.style.display = 'block'; emptyState.style.display = 'none';
+
+  const [yearStr, monthStr] = monthVal.split('-');
+  const year = parseInt(yearStr);
+  const month = parseInt(monthStr);
+  const daysInMonth = new Date(year, month, 0).getDate();
+  
+  const monthNames = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  document.getElementById('attReportTitle').innerHTML = `📅 รายงานการเข้าเรียน ${monthNames[month-1]} ${year+543}`;
+
+  const studs = DB.students.filter(s => s.classId === classId).sort((a,b) => a.no - b.no);
+
+  // 1. Build Header
+  let thHTML = `<th class="sticky-col-1">เลขที่</th><th class="sticky-col-2">ชื่อ-นามสกุล</th>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    let dateObj = new Date(year, month - 1, d);
+    let dayOfWeek = dateObj.getDay(); // 0 = Sun, 6 = Sat
+    let bgClass = dayOfWeek === 0 ? 'att-sun' : (dayOfWeek === 6 ? 'att-sat' : '');
+    thHTML += `<th class="att-cell ${bgClass}">${d}</th>`;
+  }
+  thHTML += `<th style="text-align:center; min-width:50px; background:rgba(46,196,160,.1)">มา<br><span style="font-size:9px;font-weight:400">(รวมหยุด)</span></th>
+             <th style="text-align:center; min-width:40px; background:rgba(240,90,90,.1)">ขาด</th>
+             <th style="text-align:center; min-width:40px; background:rgba(244,131,42,.1)">ลา</th>
+             <th style="text-align:center; min-width:40px; background:rgba(58,134,255,.1)">ป่วย</th>
+             <th style="text-align:center; min-width:55px;">% มาเรียน</th>`;
+  reportHeader.innerHTML = thHTML;
+
+  if (studs.length === 0) {
+    reportBody.innerHTML = `<tr><td colspan="${daysInMonth + 7}" style="text-align:center; padding: 20px;">ไม่มีข้อมูลนักเรียนในห้องนี้</td></tr>`;
+    statsWrap.innerHTML = ''; return;
+  }
+
+  // 2. Build Body & calculate overall stats
+  let trHTML = '';
+  let totalP = 0, totalA = 0, totalL = 0, totalS = 0, totalH = 0, totalSchoolDaysAllStudents = 0;
+
+  studs.forEach(s => {
+    let presentCount = 0, absentCount = 0, leaveCount = 0, sickCount = 0, holidayCount = 0;
+    let rowHTML = `<tr><td class="sticky-col-1" style="text-align:center; color:var(--text3);">${s.no}</td><td class="sticky-col-2" style="font-weight:500;">${studentFullName(s)}</td>`;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      let dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      let dateObj = new Date(year, month - 1, d);
+      let dayOfWeek = dateObj.getDay();
+      let dailyData = DB.attendance[classId] ? DB.attendance[classId][dateStr] : null;
+
+      let cellText = '';
+      let cellClass = '';
+      let textColor = '';
+
+      if (dayOfWeek === 0) cellClass = 'att-sun';
+      else if (dayOfWeek === 6) cellClass = 'att-sat';
+
+      if (dailyData && dailyData.isHoliday) {
+        cellText = 'ห'; cellClass = 'att-hol'; textColor = 'color: var(--text3);'; holidayCount++;
+      } else if (dailyData && dailyData.records && dailyData.records[s.id]) {
+        let status = dailyData.records[s.id];
+        if (status === 'present') { cellText = 'ม'; textColor = 'color: var(--teal); font-weight:bold;'; presentCount++; }
+        else if (status === 'absent') { cellText = 'ข'; textColor = 'color: var(--red); font-weight:bold;'; absentCount++; }
+        else if (status === 'leave') { cellText = 'ล'; textColor = 'color: var(--orange); font-weight:bold;'; leaveCount++; }
+        else if (status === 'sick') { cellText = 'ป'; textColor = 'color: var(--blue); font-weight:bold;'; sickCount++; }
+      }
+
+      rowHTML += `<td class="att-cell ${cellClass}" style="${textColor}" title="${dateStr}">${cellText}</td>`;
     }
-    
-    document.getElementById('attReportEmpty').style.display = 'none';
-    document.getElementById('attReportContent').style.display = 'block';
 
-    const [y, m] = monthVal.split('-');
-    const cls = getClass(classId);
-    document.getElementById('attReportTitle').innerHTML = `📈 รายงานการเข้าเรียน ห้อง ${cls?.name||''} - ${['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][parseInt(m)-1]} ${parseInt(y)+543}`;
+    // "การคำนวนวันมาเรียน หากตรงกับวันหยุดพิเศษให้ถือว่านักเรียนมาครบ"
+    let totalPresentThisStudent = presentCount + holidayCount;
+    let totalRecordsThisStudent = totalPresentThisStudent + absentCount + leaveCount + sickCount;
+    let pct = totalRecordsThisStudent > 0 ? Math.round((totalPresentThisStudent / totalRecordsThisStudent) * 100) : 0;
 
-    // Get all dates in this month that have attendance records for this class
-    const classRecords = DB.attendance[classId] || {};
-    const daysInMonth = Object.keys(classRecords).filter(d => d.startsWith(monthVal)).sort();
+    rowHTML += `<td style="text-align:center; color:var(--teal); font-weight:bold; background: rgba(46,196,160,.05);">${totalPresentThisStudent}</td>`;
+    rowHTML += `<td style="text-align:center; color:var(--red); background: rgba(240,90,90,.05);">${absentCount}</td>`;
+    rowHTML += `<td style="text-align:center; color:var(--orange); background: rgba(244,131,42,.05);">${leaveCount}</td>`;
+    rowHTML += `<td style="text-align:center; color:var(--blue); background: rgba(58,134,255,.05);">${sickCount}</td>`;
+    rowHTML += `<td style="text-align:center; font-weight:bold; background: var(--surface2);">${totalRecordsThisStudent > 0 ? pct + '%' : '-'}</td>`;
 
-    const thead = document.getElementById('attReportHeader');
-    const tbody = document.getElementById('attReportBody');
-    const stats = document.getElementById('attReportStats');
+    rowHTML += `</tr>`;
+    trHTML += rowHTML;
 
-    if (daysInMonth.length === 0) {
-        thead.innerHTML = `<th>ข้อมูล</th>`; 
-        tbody.innerHTML = `<tr><td style="text-align:center;padding:40px;color:var(--text3)">ไม่มีการบันทึกการเข้าเรียนในเดือนนี้</td></tr>`; 
-        stats.innerHTML = ''; 
-        return; 
-    }
+    totalP += presentCount; totalA += absentCount; totalL += leaveCount; totalS += sickCount; totalH += holidayCount;
+    totalSchoolDaysAllStudents += totalRecordsThisStudent;
+  });
 
-    // Build Header
-    let thHTML = `<th style="width:40px; text-align:center;">เลขที่</th><th style="min-width:140px;">ชื่อ-นามสกุล</th>`;
-    let totalHolidays = 0;
-    
-    daysInMonth.forEach(date => {
-        const dNum = parseInt(date.split('-')[2]);
-        const isH = classRecords[date].isHoliday;
-        if(isH) totalHolidays++;
-        thHTML += `<th class="att-day-cell" title="${date}">${dNum}</th>`;
-    });
-    thHTML += `<th style="text-align:center; color:var(--teal)">มา</th><th style="text-align:center; color:var(--red)">ขาด</th><th style="text-align:center; color:var(--orange)">ลา</th><th style="text-align:center; color:var(--blue)">ป่วย</th>`;
-    thead.innerHTML = thHTML;
+  reportBody.innerHTML = trHTML;
 
-    const studs = DB.students.filter(s => s.classId === classId).sort((a,b) => a.no - b.no);
-    let classTotalPresent = 0, classTotalAbsent = 0, classTotalLeave = 0, classTotalSick = 0;
-    const activeDays = daysInMonth.length - totalHolidays;
+  // 3. Overall Stats Cards
+  let totalAllPresent = totalP + totalH;
+  let overallPct = totalSchoolDaysAllStudents > 0 ? Math.round((totalAllPresent / totalSchoolDaysAllStudents) * 100) : 0;
 
-    tbody.innerHTML = studs.map(s => {
-        let p=0, a=0, l=0, sk=0;
-        let tdHTML = `<td style="text-align:center; color:var(--text3)">${s.no}</td><td style="font-weight:500">${studentFullName(s)}</td>`;
-        
-        daysInMonth.forEach(date => {
-            const rec = classRecords[date];
-            if (rec.isHoliday) {
-                tdHTML += `<td class="att-day-cell"><span class="att-mark holiday" title="${rec.note}">-</span></td>`;
-            } else {
-                const status = rec.records[s.id];
-                if (status === 'present') { p++; tdHTML += `<td class="att-day-cell"><span class="att-mark present">ม</span></td>`; }
-                else if (status === 'absent') { a++; tdHTML += `<td class="att-day-cell"><span class="att-mark absent">ข</span></td>`; }
-                else if (status === 'leave') { l++; tdHTML += `<td class="att-day-cell"><span class="att-mark leave">ล</span></td>`; }
-                else if (status === 'sick') { sk++; tdHTML += `<td class="att-day-cell"><span class="att-mark sick">ป</span></td>`; }
-                else { tdHTML += `<td class="att-day-cell">-</td>`; }
-            }
-        });
-        
-        classTotalPresent += p; classTotalAbsent += a; classTotalLeave += l; classTotalSick += sk;
-        
-        tdHTML += `
-            <td style="text-align:center; font-weight:600; color:var(--teal)">${p}</td>
-            <td style="text-align:center; font-weight:600; color:var(--red)">${a}</td>
-            <td style="text-align:center; font-weight:600; color:var(--orange)">${l}</td>
-            <td style="text-align:center; font-weight:600; color:var(--blue)">${sk}</td>
-        `;
-        return `<tr>${tdHTML}</tr>`;
-    }).join('');
-
-    const classTotalAtt = classTotalPresent + classTotalAbsent + classTotalLeave + classTotalSick;
-    const attPercent = classTotalAtt > 0 ? Math.round((classTotalPresent / classTotalAtt) * 100) : 0;
-
-    stats.innerHTML = `
-        <div class="stat-card purple"><div class="stat-label">คาบเรียนที่มีการเช็คชื่อ (ไม่รวมวันหยุด)</div><div class="stat-val">${activeDays} <span style="font-size:12px; font-weight:normal; color:var(--text3)">วัน</span></div></div>
-        <div class="stat-card teal"><div class="stat-label">อัตราการมาเรียนเฉลี่ย</div><div class="stat-val">${attPercent}%</div></div>
-        <div class="stat-card red"><div class="stat-label">ยอดขาดเรียนรวม</div><div class="stat-val">${classTotalAbsent} <span style="font-size:12px; font-weight:normal; color:var(--text3)">ครั้ง</span></div></div>
-    `;
+  statsWrap.innerHTML = `
+    <div class="stat-card teal"><div class="stat-label">มาเรียนรวม (นับรวมวันหยุด)</div><div class="stat-val">${totalAllPresent} <span style="font-size:14px;color:var(--text2);font-weight:400">ครั้ง</span></div></div>
+    <div class="stat-card red"><div class="stat-label">ขาดเรียนรวม</div><div class="stat-val">${totalA} <span style="font-size:14px;color:var(--text2);font-weight:400">ครั้ง</span></div></div>
+    <div class="stat-card orange"><div class="stat-label">ลา / ป่วย รวม</div><div class="stat-val">${totalL + totalS} <span style="font-size:14px;color:var(--text2);font-weight:400">ครั้ง</span></div></div>
+    <div class="stat-card purple"><div class="stat-label">อัตรามาเรียนห้องเฉลี่ย</div><div class="stat-val">${overallPct}%</div></div>
+  `;
 }
 
 // ===== PORTFOLIO =====
@@ -1729,7 +1740,7 @@ function renderMonthlyReport() {
   const monthVal = document.getElementById('reportMonth').value, classId = document.getElementById('reportClass').value;
   if (monthVal) {
     const [y, m] = monthVal.split('-');
-    document.getElementById('monthlyReportTitle').innerHTML = `📅 รายงานส่งงานประจำเดือน ${['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][parseInt(m)-1]} ${parseInt(y)+543}`;
+    document.getElementById('monthlyReportTitle').innerHTML = `📝 รายงานส่งงานประจำเดือน ${['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][parseInt(m)-1]} ${parseInt(y)+543}`;
   }
   
   const monthAssigns = DB.assignments.filter(a => a.due && a.due.substring(0,7) === monthVal && (a.classId === 'ALL' || a.classId === classId || classId === ''));
@@ -1824,10 +1835,10 @@ async function saveSettings() {
 
   toast('กำลังบันทึกการตั้งค่า...', 'info');
   const res = await postAPI('saveSettings', payload);
-  if (res && res.success) {
+  if (res.success) {
     renderDashboard(); if (currentPage === 'summary') renderSummary(); if (currentPage === 'students') renderStudents(); if (currentPage === 'monthly') renderMonthlyReport();
     toast('บันทึกการตั้งค่าสำเร็จ ✨', 'success');
-  } else { toast('บันทึกสำเร็จ (Offline Mode)', 'success'); }
+  } else { toast('บันทึกไม่สำเร็จ: ' + res.error, 'error'); }
 }
 </script>
 </body>
