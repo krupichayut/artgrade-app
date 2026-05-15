@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ArtGrade — ระบบจัดการคะแนนและเข้าเรียน</title>
+<title>ArtGrade — ระบบจัดการคะแนนศิลปะ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +19,7 @@
   --orange:#F4832A;--orange-light:#FEF0E6;
   --red:#F05A5A;--red-light:#FCEBEB;
   --amber:#E8A020;--amber-light:#FAEEDA;
-  --green:#4CAF7D; --gray:#4A4A5A;
+  --green:#4CAF7D;
   --radius:10px;--radius-sm:6px;--radius-lg:16px;
   --shadow:0 4px 20px rgba(0,0,0,.4);
   --font:'Sarabun','IBM Plex Sans Thai',sans-serif;
@@ -34,6 +34,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 
 /* ===== LAYOUT ===== */
 .app{display:flex;height:100vh;overflow:hidden}
+
+/* ===== SIDEBAR ===== */
 .sidebar{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .3s ease}
 .sidebar.collapsed{width:60px;min-width:60px}
 .sidebar-header{padding:18px 16px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
@@ -43,7 +45,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .logo-title{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
 .logo-sub{font-size:10px;color:var(--text3);white-space:nowrap;margin-top:1px}
 .sidebar-nav{flex:1;overflow-y:auto;padding:10px 8px}
-
 .nav-group-label{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:.06em;padding:10px 10px 4px;white-space:nowrap;overflow:hidden}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;white-space:nowrap;overflow:hidden;position:relative}
 .nav-item:hover{background:var(--surface);color:var(--text)}
@@ -53,6 +54,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);flex-shrink:0}
 .semester-pill{background:var(--surface3);border:1px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden}
 
+/* ===== MAIN ===== */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;flex-shrink:0}
 .topbar-toggle{background:none;border:none;color:var(--text2);cursor:pointer;padding:6px;border-radius:var(--radius-sm);font-size:16px;line-height:1;transition:all .15s}
@@ -61,15 +63,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .topbar-breadcrumb b{color:var(--text);font-weight:500}
 .topbar-actions{display:flex;align-items:center;gap:8px}
 
-.content{flex:1;overflow-y:auto;padding:24px}
-.page{display:none}
-.page.active{display:block; animation: fadeIn 0.3s ease;}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
-.card-sm{padding:14px}
-.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-
+/* ===== BUTTONS & UTILS ===== */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;transition:all .15s;white-space:nowrap}
 .btn-primary{background:var(--purple);color:#fff}
 .btn-primary:hover{background:var(--purple2);transform:translateY(-1px)}
@@ -79,14 +73,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 .btn-danger:hover{background:rgba(240,90,90,.25)}
 .btn-sm{padding:5px 10px;font-size:12px}
 
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border); background: var(--surface);}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{background:var(--surface2);padding:11px 14px;text-align:left;font-weight:500;color:var(--text2);font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap}
-tbody td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-tbody tr:hover td{background:var(--surface2)}
-.sortable{cursor:pointer;user-select:none}
-.sortable:hover{color:var(--text)}
+/* ===== CONTENT & CARDS ===== */
+.content{flex:1;overflow-y:auto;padding:24px}
+.page{display:none}
+.page.active{display:block; animation: fadeIn 0.3s ease;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.card-sm{padding:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* ===== STAT GRID ===== */
 .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;position:relative;overflow:hidden}
 .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
@@ -97,6 +94,32 @@ tbody tr:hover td{background:var(--surface2)}
 .stat-label{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500}
 .stat-val{font-size:28px;font-weight:600;color:var(--text);line-height:1}
 
+/* ===== GRIDS & LAYOUTS ===== */
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px}
+.room-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.room-name{font-size:12px;color:var(--text2);width:50px;flex-shrink:0}
+.bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden; position:relative;}
+.bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.bar-pct{font-size:11px;color:var(--text2);width:32px;text-align:right;flex-shrink:0}
+
+/* ===== TABLES ===== */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border); background: var(--surface);}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--surface2);padding:11px 14px;text-align:left;font-weight:500;color:var(--text2);font-size:12px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tbody tr:hover td{background:var(--surface2)}
+.sortable{cursor:pointer;user-select:none}
+.sortable:hover{color:var(--text)}
+
+/* Complex Table Styles (Yearly Report) */
+.yearly-table th, .yearly-table td { border: 1px solid var(--border); text-align: center; }
+.yearly-table th { background: var(--surface2); color: var(--text); font-weight: 600; padding: 8px; }
+.yearly-table .sticky-col { position: sticky; left: 0; background: var(--surface2); z-index: 2; text-align: left; }
+.bg-t1 { background: rgba(139,103,240,.1) !important; }
+.bg-t2 { background: rgba(46,196,160,.1) !important; }
+.bg-sum { background: rgba(244,131,42,.1) !important; }
+
+/* ===== BADGES & GRADES ===== */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:500;white-space:nowrap}
 .badge-purple{background:rgba(139,103,240,.18);color:var(--purple)}
 .badge-teal{background:rgba(46,196,160,.15);color:var(--teal)}
@@ -110,11 +133,6 @@ tbody tr:hover td{background:var(--surface2)}
 .grade-1{background:rgba(244,131,42,.2);color:var(--orange)}
 .grade-0{background:rgba(240,90,90,.2);color:var(--red)}
 
-.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;width:100%;outline:none;transition:border .15s}
-.input:focus{border-color:var(--purple)}
-.form-group{margin-bottom:12px}
-label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
-
 /* ===== ATTENDANCE STYLES ===== */
 .att-group { display: flex; gap: 4px; border-radius: var(--radius-sm); overflow: hidden; background: var(--bg3); border: 1px solid var(--border); padding: 4px; width: fit-content; }
 .att-btn { flex: 1; padding: 6px 12px; font-size: 12px; font-weight: 500; color: var(--text3); border: none; background: transparent; cursor: pointer; border-radius: 4px; transition: all 0.2s; white-space: nowrap; }
@@ -125,7 +143,6 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 .att-btn.active.st-sick { background: rgba(139,103,240,0.15); color: var(--purple); }
 
 /* ===== CALENDAR & REPORT STYLES ===== */
-.cal-wrap { overflow-x: auto; max-width: 100%; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
 .cal-table { min-width: max-content; }
 .cal-table th, .cal-table td { border: 1px solid var(--border); text-align: center; font-size: 11px; padding: 6px 2px; }
 .cal-table .sticky-col { position: sticky; left: 0; background: var(--surface2); z-index: 2; text-align: left; padding: 8px 12px; border-right: 2px solid var(--border2); }
@@ -140,11 +157,19 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 .cal-cell.st-leave { color: var(--orange); }
 .cal-cell.st-sick { color: var(--purple); }
 
-/* ===== PROGRESS BAR ===== */
-.bar-wrap{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden; position: relative;}
-.bar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+/* ===== FORMS ===== */
+.input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-family:var(--font);font-size:13px;width:100%;outline:none;transition:border .15s}
+.input:focus{border-color:var(--purple)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-group{margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-weight:500}
+.form-hint{font-size:11px;color:var(--text3);margin-top:3px}
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.search-wrap{position:relative;flex:1;max-width:320px}
+.search-wrap input{padding-left:34px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none}
 
-/* ===== MODALS & TOASTS ===== */
+/* ===== MODALS ===== */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}
@@ -163,6 +188,28 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 .score-box-val{font-size:20px;font-weight:700;margin-bottom:4px}
 .score-box-label{font-size:11px;color:var(--text2)}
 
+/* ===== SPEED GRADING ===== */
+.score-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;color:var(--text);font-family:var(--font);font-size:14px;width:80px;text-align:center;outline:none}
+.score-input:focus{border-color:var(--purple);background:var(--surface2)}
+.score-input.over{border-color:var(--red);color:var(--red)}
+.score-input.good{border-color:var(--teal)}
+
+/* ===== SETTINGS ===== */
+.settings-section{margin-bottom:24px}
+.settings-section h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.grade-range-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.grade-range-item{text-align:center}
+.grade-range-label{font-size:11px;color:var(--text2);margin-bottom:5px}
+.grade-range-input{width:100%;text-align:center}
+
+/* ===== UTILS ===== */
+.page-header{margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.page-header-left h1{font-size:20px;font-weight:700;color:var(--text);margin-bottom:3px}
+.page-header-left p{font-size:13px;color:var(--text3)}
+.empty{text-align:center;padding:60px 20px;color:var(--text3)}
+.empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+
+/* ===== TOAST ===== */
 .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .toast{background:var(--surface3);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;box-shadow:var(--shadow);animation:slideIn .3s ease;max-width:320px}
 @keyframes slideIn{from{transform:translateX(100px);opacity:0}to{transform:none;opacity:1}}
@@ -180,7 +227,7 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
   .main { overflow: visible; background: white; }
   .content { padding: 0; }
   .page { display: none !important; }
-  #page-summary.active, #page-monthly.active, #page-attendance-report.active, #page-missing.active { display: block !important; }
+  #page-summary.active, #page-yearly-summary.active, #page-monthly.active, #page-attendance-report.active, #page-missing.active { display: block !important; }
   .table-wrap, .cal-wrap { border: 1px solid #ccc; overflow: visible !important; background: white; }
   table th { background: #eee !important; color: black !important; border-bottom: 1px solid #aaa !important; }
   table td { border-bottom: 1px solid #ccc !important; color: black !important; }
@@ -191,21 +238,17 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
   .print-signatures { display: flex !important; color: black !important; }
 }
 
-.empty{text-align:center;padding:60px 20px;color:var(--text3)}
-.empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
-.page-header{margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.page-header-left h1{font-size:20px;font-weight:700;color:var(--text);margin-bottom:3px}
-.page-header-left p{font-size:13px;color:var(--text3)}
-
-/* Settings Grade Ranges */
-.grade-range-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
-.grade-range-item{text-align:center}
-.grade-range-label{font-size:11px;color:var(--text2);margin-bottom:5px}
-.grade-range-input{width:100%;text-align:center}
-
-/* Speed Grading Input */
-.score-input{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;color:var(--text);font-family:var(--font);font-size:14px;width:80px;text-align:center;outline:none}
-.score-input:focus{border-color:var(--purple);background:var(--surface2)}
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .grid-2-1{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .sidebar{width:60px;min-width:60px}
+  .logo-text,.nav-group-label,.nav-item span:not(.nav-icon){display:none}
+  .nav-item{justify-content:center;padding:10px}
+  .content{padding:14px}
+}
 </style>
 </head>
 <body>
@@ -217,7 +260,7 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         <div class="logo-icon">🎨</div>
         <div class="logo-text">
           <div class="logo-title">ArtGrade</div>
-          <div class="logo-sub">ระบบจัดการชั้นเรียน</div>
+          <div class="logo-sub">ระบบคะแนนและชั้นเรียน</div>
         </div>
       </div>
     </div>
@@ -226,8 +269,11 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
       <div class="nav-item active" onclick="navigate('dashboard',this)" data-page="dashboard">
         <span class="nav-icon">📊</span><span>แดชบอร์ด</span>
       </div>
+      <div class="nav-item" onclick="navigate('yearly-summary',this)" data-page="yearly-summary">
+        <span class="nav-icon">🏆</span><span>สรุปผลรายปี (ปพ.5)</span>
+      </div>
       <div class="nav-item" onclick="navigate('summary',this)" data-page="summary">
-        <span class="nav-icon">📋</span><span>สรุปคะแนน</span>
+        <span class="nav-icon">📋</span><span>สรุปคะแนนเทอม</span>
       </div>
 
       <div class="nav-group-label">เข้าเรียน & ส่งงาน</div>
@@ -259,9 +305,6 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
       <div class="nav-item" onclick="navigate('grading',this)" data-page="grading">
         <span class="nav-icon">⚡</span><span>กรอกคะแนน</span>
       </div>
-      <div class="nav-item" onclick="navigate('portfolio',this)" data-page="portfolio">
-        <span class="nav-icon">🖼️</span><span>Portfolio</span>
-      </div>
 
       <div class="nav-group-label">ระบบ</div>
       <div class="nav-item" onclick="navigate('settings',this)" data-page="settings">
@@ -269,7 +312,7 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
       </div>
     </div>
     <div class="sidebar-footer">
-      <div class="semester-pill" id="displaySemester">กำลังโหลด...</div>
+      <div class="semester-pill" id="displaySemester">ปีการศึกษา 2568</div>
     </div>
   </nav>
 
@@ -292,9 +335,9 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         <div class="page-header">
           <div class="page-header-left"><h1>แดชบอร์ด</h1><p id="dashSubtitle">กำลังเชื่อมต่อข้อมูล...</p></div>
         </div>
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px" class="resp-grid">
+        <div class="grid-2-1">
           <div class="card">
-            <div class="card-title">📈 ความคืบหน้าการส่งงาน (รายห้อง)</div>
+            <div class="card-title"><span class="card-title-text">📈 ความคืบหน้าการส่งงาน (รายห้อง)</span></div>
             <div id="progressBars"></div>
           </div>
           <div class="card">
@@ -306,6 +349,34 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         </div>
       </div>
 
+      <!-- ===== YEARLY SUMMARY (ปพ.5 รายปี) ===== -->
+      <div class="page" id="page-yearly-summary">
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1>🏆 สรุปผลรายปี (ปพ.5)</h1>
+            <p>ตารางคะแนนรวม 2 ภาคเรียนแยกตามหน่วยการเรียนรู้ และคะแนนสอบกลาง/ปลายปี</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <select class="input btn-sm" id="yearlyClassFilter" onchange="renderYearlySummary()"><option value="">เลือกห้องเรียน</option></select>
+            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์ตาราง</button>
+          </div>
+        </div>
+
+        <div class="empty" id="yearlyEmpty"><div class="empty-icon">📊</div><div class="empty-title">กรุณาเลือกห้องเรียนเพื่อดูสรุปผลรายปี</div></div>
+
+        <div class="table-wrap" id="yearlyTableWrap" style="display:none;">
+          <table class="yearly-table">
+            <thead id="yearlyThead"></thead>
+            <tbody id="yearlyTbody"></tbody>
+          </table>
+        </div>
+        <div class="print-signatures" id="printSigYearly">
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้อำนวยการโรงเรียน</div><div>(<span class="print_director_name"></span>)</div></div>
+        </div>
+      </div>
+
       <!-- ===== CLASSES ===== -->
       <div class="page" id="page-classes">
         <div class="page-header">
@@ -314,7 +385,7 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>ห้องเรียน</th><th>ระดับชั้น</th><th>จำนวนนักเรียน</th><th>การลบ</th></tr></thead>
+            <thead><tr><th>ห้องเรียน</th><th>ระดับชั้น</th><th>จำนวนนักเรียน</th><th>ความคืบหน้า</th><th>จัดการ</th></tr></thead>
             <tbody id="classesTable"></tbody>
           </table>
         </div>
@@ -329,13 +400,16 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
             <button class="btn btn-primary" onclick="openModal('addStudentModal')">+ เพิ่มนักเรียน</button>
           </div>
         </div>
-        <div style="display:flex;gap:10px;margin-bottom:16px">
-          <input type="text" class="input" id="studentSearch" placeholder="🔍 ค้นหาชื่อนักเรียน..." oninput="renderStudents()" style="max-width:300px">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="input" id="studentSearch" placeholder="ค้นหาชื่อนักเรียน..." oninput="renderStudents()">
+          </div>
           <select class="input" id="classFilter" onchange="renderStudents()" style="width:auto"><option value="">ทุกห้องเรียน</option></select>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>คะแนนรวม (เก็บ+สอบ)</th><th>เกรด</th><th>ส่งแล้ว</th><th>จัดการ</th></tr></thead>
+            <thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>คะแนนรวม (เก็บ+สอบ)</th><th>เกรด</th><th>ส่งงานแล้ว</th><th>จัดการ</th></tr></thead>
             <tbody id="studentsTable"></tbody>
           </table>
         </div>
@@ -344,18 +418,26 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
       <!-- ===== ASSIGNMENTS ===== -->
       <div class="page" id="page-assignments">
         <div class="page-header">
-          <div class="page-header-left"><h1>ชิ้นงาน / การสอบ</h1><p>จัดการชิ้นงานและกิจกรรมการเรียน รวมถึงการสอบปลายภาค</p></div>
+          <div class="page-header-left">
+            <h1>ชิ้นงาน / การสอบ</h1>
+            <p>จัดการชิ้นงาน กิจกรรมการเรียน และการสอบ (ระบุเทอมและหน่วยได้)</p>
+          </div>
           <button class="btn btn-primary" onclick="openModal('addAssignModal')">+ เพิ่มชิ้นงาน/สอบ</button>
         </div>
-        <div style="display:flex;gap:10px;margin-bottom:16px">
+        <div class="toolbar">
           <select class="input" id="assignCatFilter" onchange="renderAssignments()" style="width:auto">
-            <option value="">ทุกประเภท</option><option value="homework">คะแนนเก็บ</option><option value="final">คะแนนสอบ</option>
+            <option value="">ทุกประเภท</option>
+            <option value="homework">คะแนนเก็บ (หน่วย)</option>
+            <option value="midterm">สอบกลางปี</option>
+            <option value="final">สอบปลายปี</option>
           </select>
-          <select class="input" id="assignClassFilter" onchange="renderAssignments()" style="width:auto"><option value="">ทุกห้อง</option></select>
+          <select class="input" id="assignClassFilter" onchange="renderAssignments()" style="width:auto">
+            <option value="">ทุกห้อง</option>
+          </select>
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>#</th><th>ชื่อชิ้นงาน/สอบ</th><th>หมวดหมู่</th><th>ห้อง</th><th>คะแนนเต็มดิบ</th><th>จัดการ</th></tr></thead>
+            <thead><tr><th>#</th><th>เทอม</th><th>ชื่อชิ้นงาน/สอบ</th><th>หน่วย</th><th>หมวดหมู่</th><th>ห้อง</th><th>คะแนนเต็ม</th><th>จัดการ</th></tr></thead>
             <tbody id="assignmentsTable"></tbody>
           </table>
         </div>
@@ -366,21 +448,65 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         <div class="page-header">
           <div class="page-header-left"><h1>⚡ Speed Grading</h1><p>กรอกคะแนนอย่างรวดเร็ว — กด Enter เพื่อเลื่อนไปคนถัดไป</p></div>
         </div>
-        <div class="card" style="margin-bottom:16px; display:flex; gap:12px; align-items:flex-end;">
-          <div style="flex:1"><label>เลือกห้องเรียน</label><select class="input" id="gradingClass" onchange="loadGradingAssignments()"></select></div>
-          <div style="flex:1"><label>เลือกชิ้นงาน / สอบ</label><select class="input" id="gradingAssignment" onchange="loadGradingTable()"></select></div>
-          <button class="btn btn-primary" onclick="saveAllScores()">💾 บันทึกทั้งหมด</button>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px"><label>เลือกห้องเรียน</label><select class="input" id="gradingClass" onchange="loadGradingAssignments()"></select></div>
+            <div style="flex:1;min-width:220px"><label>เลือกชิ้นงาน / สอบ</label><select class="input" id="gradingAssignment" onchange="loadGradingTable()"></select></div>
+            <div><label>&nbsp;</label><button class="btn btn-primary" onclick="saveAllScores()">💾 บันทึกทั้งหมด</button></div>
+          </div>
         </div>
-        <div id="gradingInfo" class="card card-sm" style="display:none; margin-bottom:12px; gap:20px;">
-          <div><span style="font-size:11px;color:var(--text3)">คะแนนเต็ม</span><br><b id="gradingMax" style="color:var(--purple)">—</b></div>
-          <div><span style="font-size:11px;color:var(--text3)">กรอกแล้ว</span><br><b id="gradingDone" style="color:var(--teal)">0</b></div>
+        <div id="gradingInfo" style="margin-bottom:12px;display:none">
+          <div class="card card-sm" style="display:flex;gap:20px;align-items:center">
+            <div><span style="font-size:11px;color:var(--text3)">คะแนนเต็ม</span><br><b id="gradingMax" style="color:var(--purple)">—</b></div>
+            <div><span style="font-size:11px;color:var(--text3)">กรอกแล้ว</span><br><b id="gradingDone" style="color:var(--teal)">0</b></div>
+            <div><span style="font-size:11px;color:var(--text3)">ยังไม่กรอก</span><br><b id="gradingLeft" style="color:var(--orange)">0</b></div>
+          </div>
         </div>
-        <div class="empty" id="gradingEmpty"><div class="empty-icon">⚡</div><div class="empty-title">เลือกห้องเรียนและชิ้นงานเพื่อเริ่มกรอก</div></div>
-        <div class="table-wrap" id="gradingTable" style="display:none">
-          <table class="score-table">
-            <thead><tr><th style="width:60px">เลขที่</th><th>ชื่อ-นามสกุล</th><th style="width:100px;text-align:center">คะแนน</th><th>URL ผลงาน</th><th>หมายเหตุ</th></tr></thead>
-            <tbody id="gradingTbody"></tbody>
+        <div id="gradingTableWrap">
+          <div class="empty" id="gradingEmpty"><div class="empty-icon">⚡</div><div class="empty-title">เลือกห้องเรียนและชิ้นงาน</div></div>
+          <div class="table-wrap" id="gradingTable" style="display:none">
+            <table class="score-table">
+              <thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>คะแนน</th><th>%</th><th>URL ผลงาน</th><th>หมายเหตุ</th></tr></thead>
+              <tbody id="gradingTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SUMMARY (เทอม) ===== -->
+      <div class="page" id="page-summary">
+        <div class="page-header">
+          <div class="page-header-left"><h1>สรุปคะแนนเทอม</h1><p>ตารางสรุปคะแนนรวมเฉพาะเทอมที่เลือก (เก็บ/สอบ)</p></div>
+          <div style="display:flex;gap:8px">
+            <select class="input btn-sm" id="summaryClassFilter" onchange="renderSummary()"><option value="">ทุกห้อง</option></select>
+            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+          </div>
+        </div>
+        <div style="margin-bottom:12px; font-size:12px; color:var(--text2); display:flex; gap:16px;">
+          <div><span class="grade-circle grade-4" style="width:16px;height:16px;font-size:10px">เก</span> <b>คะแนนเก็บ:</b> <span id="label_ratio_work">70</span></div>
+          <div><span class="grade-circle grade-0" style="width:16px;height:16px;font-size:10px">ส</span> <b>สอบ:</b> <span id="label_ratio_final">30</span></div>
+          <div><span class="grade-circle badge-gray" style="width:16px;height:16px;font-size:10px">ร</span> <b>รวมทั้งหมด:</b> <span id="label_ratio_total">100</span></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th class="sortable" onclick="sortSummary('rank')">อันดับ ↕</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>ห้อง</th>
+              <th style="background:rgba(139,103,240,.08)">เก็บ (ดิบ)</th>
+              <th style="background:rgba(139,103,240,.08)" id="th_work">เก็บ (โอน)</th>
+              <th style="background:rgba(240,90,90,.08)">สอบ (ดิบ)</th>
+              <th style="background:rgba(240,90,90,.08)" id="th_final">สอบ (โอน)</th>
+              <th class="sortable" onclick="sortSummary('scaled')" id="summaryScoreHeader" style="background:var(--surface3)">รวม ↕</th>
+              <th class="sortable" onclick="sortSummary('grade')">เกรด ↕</th>
+            </tr></thead>
+            <tbody id="summaryTable"></tbody>
           </table>
+        </div>
+        <div class="print-signatures" id="printSigTerm">
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้อำนวยการโรงเรียน</div><div>(<span class="print_director_name"></span>)</div></div>
         </div>
       </div>
 
@@ -443,7 +569,7 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 
         <div class="empty" id="attReportEmpty"><div class="empty-icon">🔍</div><div class="empty-title">กรุณาเลือกห้องเรียนและเดือน</div></div>
         
-        <div class="cal-wrap" id="attReportTableWrap" style="display:none;">
+        <div class="cal-wrap" id="attReportTableWrap" style="display:none; max-width:100%; overflow-x:auto;">
           <table class="cal-table">
             <thead id="attReportThead"></thead>
             <tbody id="attReportTbody"></tbody>
@@ -453,6 +579,33 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
           <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้รายงาน</div><div>(<span class="print_teacher_name"></span>)</div></div>
           <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
           <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้อำนวยการโรงเรียน</div><div>(<span class="print_director_name"></span>)</div></div>
+        </div>
+      </div>
+
+      <!-- ===== MONTHLY REPORT (ส่งงาน) ===== -->
+      <div class="page" id="page-monthly">
+        <div class="page-header">
+          <div class="page-header-left"><h1 id="monthlyReportTitle">📅 รายงานส่งงานประจำเดือน</h1><p>สรุปการส่งงานและคะแนนของนักเรียน</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
+        </div>
+        <div class="toolbar" style="background:var(--surface); padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div><label style="margin-bottom:2px">เลือกเดือน</label><input type="month" class="input" id="reportMonth" onchange="renderMonthlyReport()" style="width:auto"></div>
+            <div><label style="margin-bottom:2px">เลือกห้องเรียน</label><select class="input" id="reportClass" onchange="renderMonthlyReport()" style="width:auto"><option value="">ทุกห้อง</option></select></div>
+          </div>
+        </div>
+        <div class="stat-grid" id="monthlyStats" style="margin-top:16px; grid-template-columns: repeat(3, 1fr);"></div>
+        <div class="card" style="margin-top:16px; padding:0; overflow:hidden;">
+          <div class="table-wrap" style="border:none; border-radius:0;">
+            <table>
+              <thead><tr id="monthlyTableHeader"><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>ข้อมูลชิ้นงาน</th></tr></thead>
+              <tbody id="monthlyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="print-signatures">
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้รายงาน</div><div>(<span class="print_teacher_name"></span>)</div></div>
+          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
         </div>
       </div>
 
@@ -470,67 +623,8 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
         <div class="empty" id="missingEmpty" style="display:none;"><div class="empty-icon">🎉</div><div class="empty-title">เยี่ยมมาก! ไม่มีงานค้าง</div></div>
         <div class="table-wrap" id="missingTableWrap">
           <table>
-            <thead><tr><th style="width:60px; text-align:center;">เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th style="width:80px; text-align:center;">จำนวนที่ค้าง</th><th>รายการชิ้นงาน/สอบ ที่ค้าง</th></tr></thead>
+            <thead><tr><th style="width:60px; text-align:center;">เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th style="width:80px; text-align:center;">จำนวนที่ค้าง</th><th>รายการชิ้นงานที่ค้าง (หน่วย)</th></tr></thead>
             <tbody id="missingTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ===== SUMMARY ===== -->
-      <!-- [Portfolio is omitted for brevity but standard layout kept] -->
-      <div class="page" id="page-portfolio"><div class="page-header"><h1>🖼️ Portfolio</h1><p>กำลังพัฒนา...</p></div></div>
-
-      <div class="page" id="page-summary">
-        <div class="page-header">
-          <div class="page-header-left"><h1>สรุปคะแนน & เกรด</h1><p>ตารางสรุปคะแนนรวมแบบแยกส่วน เก็บ/ปลายภาค</p></div>
-          <div style="display:flex;gap:8px">
-            <select class="input btn-sm" id="summaryClassFilter" onchange="renderSummary()"><option value="">ทุกห้อง</option></select>
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
-          </div>
-        </div>
-        <div style="margin-bottom:12px; font-size:12px; display:flex; gap:16px; color:var(--text2)">
-          <div><b>คะแนนเก็บ:</b> <span id="label_ratio_work">70</span></div>
-          <div><b>สอบปลายภาค:</b> <span id="label_ratio_final">30</span></div>
-          <div><b>รวมฐาน:</b> <span id="label_ratio_total">100</span> (เทอม <span id="label_term_max">100</span>)</div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th class="sortable" onclick="sortSummary('rank')">อันดับ ↕</th>
-              <th>ชื่อ-นามสกุล</th>
-              <th>ห้อง</th>
-              <th style="background:rgba(139,103,240,.08)">เก็บ(ดิบ)</th>
-              <th style="background:rgba(139,103,240,.08)" id="th_work">เก็บ(โอน)</th>
-              <th style="background:rgba(240,90,90,.08)">สอบ(ดิบ)</th>
-              <th style="background:rgba(240,90,90,.08)" id="th_final">สอบ(โอน)</th>
-              <th class="sortable" onclick="sortSummary('scaled')" id="summaryScoreHeader" style="background:var(--surface3)">รวม(โอน) ↕</th>
-              <th class="sortable" onclick="sortSummary('grade')">เกรด ↕</th>
-            </tr></thead>
-            <tbody id="summaryTable"></tbody>
-          </table>
-        </div>
-        <div class="print-signatures">
-          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้รายงาน</div><div>(<span class="print_teacher_name"></span>)</div></div>
-          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
-          <div><div style="margin-bottom: 40px;">ลงชื่อ.........................................................ผู้อำนวยการโรงเรียน</div><div>(<span class="print_director_name"></span>)</div></div>
-        </div>
-      </div>
-
-      <!-- ===== MONTHLY ===== -->
-      <div class="page" id="page-monthly">
-        <div class="page-header">
-          <div class="page-header-left"><h1 id="monthlyReportTitle">📅 รายงานส่งงาน</h1><p>สรุปการส่งงานตามเดือน</p></div>
-          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
-        </div>
-        <div class="card" style="margin-bottom:16px; display:flex; gap:12px;">
-          <div><label>เดือน</label><input type="month" class="input" id="reportMonth" onchange="renderMonthlyReport()"></div>
-          <div><label>ห้องเรียน</label><select class="input" id="reportClass" onchange="renderMonthlyReport()"></select></div>
-        </div>
-        <div class="stat-grid" id="monthlyStats" style="margin-bottom:16px; grid-template-columns: repeat(3, 1fr);"></div>
-        <div class="table-wrap">
-          <table>
-            <thead id="monthlyTableHeader"></thead>
-            <tbody id="monthlyTableBody"></tbody>
           </table>
         </div>
       </div>
@@ -538,33 +632,36 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
       <!-- ===== SETTINGS ===== -->
       <div class="page" id="page-settings">
         <div class="page-header">
-          <div class="page-header-left"><h1>⚙️ ตั้งค่าระบบ</h1><p>กำหนดข้อมูลพื้นฐาน และเกณฑ์การตัดเกรด</p></div>
+          <div class="page-header-left"><h1>⚙️ ตั้งค่าระบบ</h1><p>กำหนดข้อมูลพื้นฐาน และสัดส่วนการเก็บคะแนน</p></div>
           <button class="btn btn-primary" onclick="saveSettings()">💾 บันทึกการตั้งค่า</button>
         </div>
         
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-title">🏫 ข้อมูลทั่วไป</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div><label>ชื่อผู้อำนวยการ</label><input type="text" class="input" id="setting_director"></div>
-            <div><label>ชื่อหัวหน้าวิชาการ</label><input type="text" class="input" id="setting_academic"></div>
-            <div><label>ชื่อครูผู้สอน</label><input type="text" class="input" id="setting_teacher"></div>
-            <div style="display:flex;gap:12px">
-              <div style="flex:1"><label>ภาคเรียน</label><select class="input" id="setting_semester"><option value="1">1 (เก็บ 50)</option><option value="2">2 (เก็บ 100)</option></select></div>
-              <div style="width:80px"><label>ปี</label><input type="number" class="input" id="setting_year"></div>
+        <div class="card settings-section">
+          <h3>🏫 ข้อมูลทั่วไป</h3>
+          <div class="form-row">
+            <div class="form-group"><label>ชื่อผู้อำนวยการโรงเรียน</label><input type="text" class="input" id="setting_director"></div>
+            <div class="form-group"><label>ชื่อหัวหน้าฝ่ายวิชาการ</label><input type="text" class="input" id="setting_academic"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>ชื่อครูประจำวิชา</label><input type="text" class="input" id="setting_teacher"></div>
+            <div style="display:flex; gap:12px">
+              <div class="form-group" style="flex:1"><label>ภาคเรียน (ปัจจุบัน)</label><select class="input" id="setting_semester"><option value="1">ภาค 1</option><option value="2">ภาค 2</option></select></div>
+              <div class="form-group" style="width:80px"><label>ปีการศึกษา</label><input type="number" class="input" id="setting_year" value="2568"></div>
             </div>
           </div>
         </div>
-        
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-title">⚖️ สัดส่วนคะแนน (ฐานรวม 100)</div>
-          <div style="display:flex;gap:12px">
-            <div><label>คะแนนเก็บระหว่างเทอม</label><input type="number" class="input" id="setting_ratio_work" value="70"></div>
-            <div><label>คะแนนสอบปลายภาค</label><input type="number" class="input" id="setting_ratio_final" value="30"></div>
+
+        <div class="card settings-section">
+          <h3>⚖️ สัดส่วนคะแนนสำหรับแสดงในหน้ารายเทอม (รวมกันได้ 100)</h3>
+          <p style="font-size:12px;color:var(--text3);margin-bottom:14px">สัดส่วนนี้ใช้คำนวณในหน้า "สรุปคะแนนเทอม" และการแสดงผลโปรไฟล์นักเรียน (ส่วนหน้ารายปีจะใช้คะแนนรวมจริง)</p>
+          <div class="form-row">
+            <div class="form-group"><label>คะแนนเก็บ (งาน/สอบย่อย)</label><input type="number" class="input" id="setting_ratio_work" value="70"></div>
+            <div class="form-group"><label>คะแนนสอบ (Final ของเทอมนั้น)</label><input type="number" class="input" id="setting_ratio_final" value="30"></div>
           </div>
         </div>
 
-        <div class="card" style="margin-bottom:16px">
-          <div class="card-title">🎓 เกณฑ์การตัดเกรด (อิงคะแนนเต็ม 100)</div>
+        <div class="card settings-section">
+          <h3>🎓 เกณฑ์การตัดเกรด (อิงคะแนนเต็ม 100 ระดับประถม)</h3>
           <div class="grade-range-grid">
             <div class="grade-range-item"><div class="grade-range-label"><span class="grade-circle grade-4">4</span></div><input type="number" class="input grade-range-input" id="setting_g4" value="80"></div>
             <div class="grade-range-item"><div class="grade-range-label"><span class="grade-circle grade-4" style="font-size:10px">3.5</span></div><input type="number" class="input grade-range-input" id="setting_g3_5" value="75"></div>
@@ -583,15 +680,85 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 </div>
 
 <!-- MODALS -->
-<div class="modal-overlay" id="addClassModal"><div class="modal"><div class="modal-header"><div class="modal-title">เพิ่มห้องเรียน</div><button class="modal-close" onclick="closeModal('addClassModal')">✕</button></div><div class="modal-body"><div class="form-group"><label>ระดับชั้น (ป.)</label><select class="input" id="new_class_level"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div><div class="form-group"><label>ห้อง</label><input type="number" class="input" id="new_class_room" value="1"></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addClassModal')">ยกเลิก</button><button class="btn btn-primary" onclick="addClass()">บันทึก</button></div></div></div>
+<div class="modal-overlay" id="addClassModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">เพิ่มห้องเรียน</div><button class="modal-close" onclick="closeModal('addClassModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>ระดับชั้น (ป.)</label><select class="input" id="new_class_level"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+        <div class="form-group"><label>ห้อง</label><input type="number" class="input" id="new_class_room" value="1"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addClassModal')">ยกเลิก</button><button class="btn btn-primary" onclick="addClass()">บันทึก</button></div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="addStudentModal"><div class="modal"><div class="modal-header"><div class="modal-title">เพิ่มนักเรียน</div><button class="modal-close" onclick="closeModal('addStudentModal')">✕</button></div><div class="modal-body"><div style="display:flex;gap:8px"><div class="form-group"><label>เลขที่</label><input type="number" class="input" id="new_stu_no" value="1"></div><div class="form-group"><label>คำนำหน้า</label><select class="input" id="new_stu_title"><option>ด.ช.</option><option>ด.ญ.</option></select></div></div><div class="form-group"><label>ชื่อ</label><input type="text" class="input" id="new_stu_fname"></div><div class="form-group"><label>นามสกุล</label><input type="text" class="input" id="new_stu_lname"></div><div class="form-group"><label>ห้องเรียน</label><select class="input" id="new_stu_class"></select></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addStudentModal')">ยกเลิก</button><button class="btn btn-primary" onclick="addStudent()">บันทึก</button></div></div></div>
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">เพิ่มนักเรียน</div><button class="modal-close" onclick="closeModal('addStudentModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>คำนำหน้า</label><select class="input" id="new_stu_title"><option>ด.ช.</option><option>ด.ญ.</option></select></div>
+        <div class="form-group"><label>เลขที่</label><input type="number" class="input" id="new_stu_no" value="1" min="1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>ชื่อ</label><input type="text" class="input" id="new_stu_fname"></div>
+        <div class="form-group"><label>นามสกุล</label><input type="text" class="input" id="new_stu_lname"></div>
+      </div>
+      <div class="form-group"><label>ห้องเรียน</label><select class="input" id="new_stu_class"></select></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addStudentModal')">ยกเลิก</button><button class="btn btn-primary" onclick="addStudent()">บันทึก</button></div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="importStudentModal"><div class="modal"><div class="modal-header"><div class="modal-title">นำเข้านักเรียน</div><button class="modal-close" onclick="closeModal('importStudentModal')">✕</button></div><div class="modal-body"><div class="form-group"><label>ห้องเรียน</label><select class="input" id="import_stu_class"></select></div><div class="form-group"><label>วางข้อมูล (เลขที่ คำนำหน้า ชื่อ นามสกุล)</label><textarea class="input" id="import_stu_data" rows="8"></textarea></div></div><div class="modal-footer"><button class="btn btn-primary" onclick="importStudents()">นำเข้า</button></div></div></div>
+<div class="modal-overlay" id="importStudentModal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-header"><div class="modal-title">📥 นำเข้าชื่อนักเรียน (ทีละห้อง)</div><button class="modal-close" onclick="closeModal('importStudentModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>เลือกห้องเรียนเป้าหมาย</label><select class="input" id="import_stu_class"></select></div>
+      <div class="form-group">
+        <label>วางข้อมูลนักเรียน (คัดลอกตารางจาก Excel / Sheets มาวางได้เลย)</label>
+        <div class="form-hint" style="margin-bottom:8px;"><b>รูปแบบที่รองรับ (เรียงตามคอลัมน์):</b> เลขที่ | คำนำหน้า | ชื่อ | นามสกุล</div>
+        <textarea class="input" id="import_stu_data" rows="10" placeholder="1  ด.ช.  สมชาย  ใจดี&#10;2  ด.ญ.  สมหญิง  รักเรียน" style="font-family:monospace; white-space: pre; line-height: 1.6;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('importStudentModal')">ยกเลิก</button><button class="btn btn-primary" onclick="importStudents()">นำเข้าข้อมูล</button></div>
+  </div>
+</div>
 
-<div class="modal-overlay" id="addAssignModal"><div class="modal"><div class="modal-header"><div class="modal-title">เพิ่มชิ้นงาน</div><button class="modal-close" onclick="closeModal('addAssignModal')">✕</button></div><div class="modal-body"><div class="form-group"><label>ชื่อชิ้นงาน</label><input type="text" class="input" id="new_assign_title"></div><div class="form-group"><label>หมวดหมู่</label><select class="input" id="new_assign_cat"><option value="homework">เก็บ</option><option value="final">สอบปลายภาค</option></select></div><div class="form-group"><label>ห้อง</label><select class="input" id="new_assign_class"><option value="ALL">ทุกห้อง</option></select></div><div class="form-group"><label>คะแนนเต็ม</label><input type="number" class="input" id="new_assign_max" value="10"></div><div class="form-group"><label>กำหนดส่ง/สอบ</label><input type="month" class="input" id="new_assign_due"></div></div><div class="modal-footer"><button class="btn btn-primary" onclick="addAssignment()">บันทึก</button></div></div></div>
+<div class="modal-overlay" id="addAssignModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">เพิ่มชิ้นงาน / สอบ</div><button class="modal-close" onclick="closeModal('addAssignModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>ชื่อชิ้นงาน หรือ ชื่อการสอบ</label><input type="text" class="input" id="new_assign_title" placeholder="เช่น วาดภาพจินตนาการ, สอบปลายภาค"></div>
+      
+      <!-- เพิ่มส่วนเลือกเทอมและหน่วย -->
+      <div class="form-row">
+        <div class="form-group"><label>เทอม</label><select class="input" id="new_assign_term"><option value="1">เทอม 1</option><option value="2">เทอม 2</option></select></div>
+        <div class="form-group">
+          <label>หมวดหมู่คะแนน</label>
+          <select class="input" id="new_assign_cat" onchange="toggleUnitInput()">
+            <option value="homework">คะแนนเก็บ (รายหน่วย)</option>
+            <option value="midterm">สอบกลางปี (ใช้ในเทอม 1)</option>
+            <option value="final">สอบปลายปี (ใช้ในเทอม 2)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group" id="unitInputBox"><label>หน่วยการเรียนรู้ที่</label><input type="number" class="input" id="new_assign_unit" placeholder="ระบุเป็นตัวเลข เช่น 1" min="1" value="1"></div>
+        <div class="form-group"><label>ห้องเรียน</label><select class="input" id="new_assign_class"><option value="ALL">ทุกห้อง</option></select></div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group"><label>คะแนนเต็มดิบ</label><input type="number" class="input" id="new_assign_max" value="20" min="1"></div>
+        <div class="form-group"><label>กำหนดส่ง / วันที่สอบ</label><input type="date" class="input" id="new_assign_due"></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('addAssignModal')">ยกเลิก</button><button class="btn btn-primary" onclick="addAssignment()">บันทึก</button></div>
+  </div>
+</div>
 
-<!-- PROFILE MODAL -->
 <div class="modal-overlay" id="studentProfileModal">
   <div class="modal" style="max-width:640px">
     <div class="modal-header"><div class="modal-title">โปรไฟล์นักเรียน</div><button class="modal-close" onclick="closeModal('studentProfileModal')">✕</button></div>
@@ -627,7 +794,16 @@ window.onload = async () => {
 
   DB.classes = (data.classes || []).map(c => ({...c, level: parseInt(c.level), room: parseInt(c.room)}));
   DB.students = (data.students || []).map(s => ({...s, no: parseInt(s.no)}));
-  DB.assignments = (data.assignments || []).map(a => ({...a, maxScore: parseInt(a.maxScore), active: a.active === 'TRUE' || a.active === true }));
+  
+  // แปลงค่า assignment ให้มี term และ unit (รองรับข้อมูลเก่าที่ไม่มี)
+  DB.assignments = (data.assignments || []).map(a => ({
+      ...a, 
+      maxScore: parseInt(a.maxScore), 
+      active: a.active === 'TRUE' || a.active === true,
+      term: a.term ? parseInt(a.term) : 1, // ค่าปริยายเทอม 1
+      unit: a.unit ? parseInt(a.unit) : 1  // ค่าปริยายหน่วย 1
+  }));
+  
   DB.attendance = data.attendance || [];
   
   DB.scores = {};
@@ -659,11 +835,10 @@ window.onload = async () => {
   populateClassSelects();
   
   const todayStr = new Date().toISOString().split('T')[0];
-  const d = new Date();
   document.getElementById('attDate').value = todayStr;
   document.getElementById('attReportMonth').value = todayStr.substring(0,7);
   document.getElementById('reportMonth').value = todayStr.substring(0,7);
-  document.getElementById('new_assign_due').value = todayStr.substring(0,7);
+  document.getElementById('new_assign_due').value = todayStr;
 
   renderDashboard();
   toast('โหลดข้อมูลสำเร็จ ✨', 'success');
@@ -705,12 +880,17 @@ function toast(msg, type='info') {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+function toggleUnitInput() {
+    const cat = document.getElementById('new_assign_cat').value;
+    document.getElementById('unitInputBox').style.display = cat === 'homework' ? 'block' : 'none';
+}
+
 let currentPage = 'dashboard';
 function navigate(page, navEl) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const el = document.getElementById('page-'+page); if (el) el.classList.add('active');
   if (navEl) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); navEl.classList.add('active'); }
-  const titles = { dashboard:'แดชบอร์ด',classes:'ห้องเรียน',students:'นักเรียน',assignments:'ชิ้นงาน',grading:'กรอกคะแนน',summary:'สรุปคะแนน',monthly:'รายงานส่งงาน',attendance:'เช็คชื่อเข้าเรียน','attendance-report':'รายงานเข้าเรียน',missing:'ติดตามงานค้าง',settings:'ตั้งค่า'};
+  const titles = { dashboard:'แดชบอร์ด', 'yearly-summary':'สรุปผลรายปี', classes:'ห้องเรียน',students:'นักเรียน',assignments:'ชิ้นงาน',grading:'กรอกคะแนน',summary:'สรุปคะแนนเทอม',monthly:'รายงานส่งงาน',attendance:'เช็คชื่อเข้าเรียน','attendance-report':'รายงานเข้าเรียน',missing:'ติดตามงานค้าง',settings:'ตั้งค่า'};
   document.getElementById('breadcrumb').innerHTML = `<b>${titles[page]||page}</b>`;
   currentPage = page;
   
@@ -719,6 +899,7 @@ function navigate(page, navEl) {
   if (page === 'students') renderStudents();
   if (page === 'assignments') renderAssignments();
   if (page === 'summary') renderSummary();
+  if (page === 'yearly-summary') renderYearlySummary();
   if (page === 'monthly') renderMonthlyReport();
   if (page === 'attendance') loadAttendanceList();
   if (page === 'attendance-report') renderAttendanceReport();
@@ -727,7 +908,7 @@ function navigate(page, navEl) {
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
 
 function populateClassSelects() {
-  ['classFilter','summaryClassFilter','assignClassFilter','new_stu_class','new_assign_class','import_stu_class','reportClass','attClass','attReportClass','missingClassFilter','gradingClass'].forEach(id => {
+  ['classFilter','summaryClassFilter','yearlyClassFilter','assignClassFilter','new_stu_class','new_assign_class','import_stu_class','reportClass','attClass','attReportClass','missingClassFilter','gradingClass'].forEach(id => {
     const el = document.getElementById(id); if (!el) return;
     const cur = el.value, isNew = id.startsWith('new_')||id.startsWith('import_'), hasAll = id === 'new_assign_class';
     el.innerHTML = (isNew && !hasAll) ? '' : `<option value="">${hasAll?'ทุกห้อง':'ทุกห้องเรียน'}</option>`;
@@ -737,17 +918,39 @@ function populateClassSelects() {
   });
 }
 
-// ===== CORE GRADE CALCULATION =====
+// ===== GET GRADE =====
+function calculateGrade(score) {
+    const g = DB.settings.grade_thresholds;
+    if (score >= g['4']) return 4;
+    if (score >= g['3.5']) return 3.5;
+    if (score >= g['3']) return 3;
+    if (score >= g['2.5']) return 2.5;
+    if (score >= g['2']) return 2;
+    if (score >= g['1.5']) return 1.5;
+    if (score >= g['1']) return 1;
+    return 0;
+}
+
+function getGradeCircle(g) { 
+  if (g === "-" || g === "") return `<span class="grade-circle badge-gray" style="font-size:14px; color:var(--text3)">-</span>`;
+  const cssClass = g >= 3.5 ? 'grade-4' : g >= 2.5 ? 'grade-3' : g >= 1.5 ? 'grade-2' : g >= 1 ? 'grade-1' : 'grade-0';
+  return `<span class="grade-circle ${cssClass}" style="${g.toString().includes('.')?'font-size:10px;':''}">${g}</span>`; 
+}
+
+// ===== CORE GRADE CALCULATION (สำหรับหน้าเทอม และ โปรไฟล์) =====
 function calcStudentScore(studentId) {
   const stu = getStudent(studentId);
-  const assigns = DB.assignments.filter(a => a.classId === 'ALL' || a.classId === stu?.classId);
+  // เลือกเฉพาะ assignment ในเทอมปัจจุบันที่ตั้งค่าไว้
+  const currentTerm = DB.settings.semester;
+  const assigns = DB.assignments.filter(a => (a.classId === 'ALL' || a.classId === stu?.classId) && a.term === currentTerm);
   
   let workRaw = 0, workMax = 0, workDone = 0, workTotal = 0;
   let finalRaw = 0, finalMax = 0, finalDone = 0, finalTotal = 0;
   
   assigns.forEach(a => {
     const sc = DB.scores[studentId]?.[a.id];
-    if (a.cat === 'final') {
+    // ถ้าเป็น final ของเทอม 2 หรือ midterm ของเทอม 1 ถือเป็นการสอบ
+    if (a.cat === 'final' || a.cat === 'midterm') {
       finalTotal++;
       if (sc !== undefined && sc.raw !== undefined && sc.raw !== null) { finalRaw += sc.raw; finalDone++; }
       finalMax += a.maxScore;
@@ -769,30 +972,14 @@ function calcStudentScore(studentId) {
   const finalScaled = finalMax > 0 ? Math.round(finalPct * rFinal) : 0;
   const totalScaled = workScaled + finalScaled;
 
-  const maxDisplay = DB.settings.semester == 1 ? Math.round(rTotal / 2) : rTotal;
-  const displayScaled = DB.settings.semester == 1 ? Math.round(totalScaled / 2) : totalScaled;
-
-  const g = DB.settings.grade_thresholds;
-  const totalPct = rTotal > 0 ? (totalScaled / rTotal) * 100 : 0;
-
-  let grade = 0;
-  if (totalPct >= g['4']) grade = 4;
-  else if (totalPct >= g['3.5']) grade = 3.5;
-  else if (totalPct >= g['3']) grade = 3;
-  else if (totalPct >= g['2.5']) grade = 2.5;
-  else if (totalPct >= g['2']) grade = 2;
-  else if (totalPct >= g['1.5']) grade = 1.5;
-  else if (totalPct >= g['1']) grade = 1;
-  else grade = 0;
-
-  const displayGrade = DB.settings.semester == 1 ? "-" : grade;
+  const grade = calculateGrade(totalScaled);
 
   return { 
     workRaw, workMax, workScaled, workDone, workTotal,
     finalRaw, finalMax, finalScaled, finalDone, finalTotal,
     totalRaw: workRaw + finalRaw, totalMax: workMax + finalMax, 
-    scaled: displayScaled, maxDisplay, 
-    grade: displayGrade, numGrade: grade, totalPct: Math.round(totalPct)
+    scaled: totalScaled, maxDisplay: rTotal, 
+    grade: grade, numGrade: grade
   };
 }
 
@@ -804,23 +991,17 @@ function classProgress(classId) {
   return total > 0 ? Math.round((done/total)*100) : 0;
 }
 
-function getGradeCircle(g) { 
-  if (g === "-") return `<span class="grade-circle badge-gray" style="font-size:14px; color:var(--text3)">-</span>`;
-  const cssClass = g >= 3.5 ? 'grade-4' : g >= 2.5 ? 'grade-3' : g >= 1.5 ? 'grade-2' : g >= 1 ? 'grade-1' : 'grade-0';
-  return `<span class="grade-circle ${cssClass}" style="${g.toString().includes('.')?'font-size:10px;':''}">${g}</span>`; 
-}
-
 // ===== DASHBOARD =====
 function renderDashboard() {
-  document.getElementById('displaySemester').textContent = `เทอม ${DB.settings.semester}/${DB.settings.year}`;
-  document.getElementById('dashSubtitle').textContent = `ภาคเรียนที่ ${DB.settings.semester}/${DB.settings.year} · พร้อมใช้งาน`;
+  document.getElementById('displaySemester').textContent = `ปีการศึกษา ${DB.settings.year}`;
+  document.getElementById('dashSubtitle').textContent = `ปีการศึกษา ${DB.settings.year} · พร้อมใช้งาน`;
   const colors = ['var(--purple)','var(--teal)','var(--orange)','var(--amber)','var(--red)'];
   document.getElementById('progressBars').innerHTML = DB.classes.map((cls, i) => {
      const pct = classProgress(cls.id);
      const col = pct < 60 ? 'var(--red)' : pct < 80 ? 'var(--orange)' : colors[i%colors.length];
-     return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="font-size:12px;color:var(--text2);width:50px;flex-shrink:0">${cls.name}</div><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div style="font-size:11px;color:var(--text2);width:32px;text-align:right">${pct}%</div></div>`;
+     return `<div class="room-row"><div class="room-name">${cls.name}</div><div class="bar-wrap"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="bar-pct" style="color:${pct<60?'var(--red)':'var(--text2)'}">${pct}%</div></div>`;
   }).join('');
-  document.getElementById('recentAssignments').innerHTML = [...DB.assignments].reverse().slice(0,4).map(a => `<tr><td><div style="font-weight:500">${a.title}</div><div style="font-size:11px;color:var(--text3)">${a.cat==='final'?'สอบ':'เก็บ'}</div></td><td><span class="badge badge-purple">${a.maxScore} คะแนน</span></td></tr>`).join('');
+  document.getElementById('recentAssignments').innerHTML = [...DB.assignments].reverse().slice(0,4).map(a => `<tr><td><div style="font-weight:500">${a.title}</div><div style="font-size:11px;color:var(--text3)">เทอม ${a.term} · ${a.cat==='homework'?('หน่วย '+a.unit):a.cat==='midterm'?'สอบกลางปี':'สอบปลายปี'}</div></td><td><span class="badge badge-purple">${a.maxScore} คะแนน</span></td></tr>`).join('');
 }
 
 // ===== CLASSES =====
@@ -854,28 +1035,31 @@ function renderStudents() {
 function showStudentProfile(studentId) {
   const s = getStudent(studentId); if (!s) return;
   const sc = calcStudentScore(studentId), cls = getClass(s.classId);
-  const assigns = DB.assignments.filter(a => a.classId === 'ALL' || a.classId === s.classId);
+  // เลือกเฉพาะเทอมปัจจุบันมาแสดงรายละเอียด
+  const currentTerm = DB.settings.semester;
+  const assigns = DB.assignments.filter(a => (a.classId === 'ALL' || a.classId === s.classId) && a.term === currentTerm);
 
   openModal('studentProfileModal');
   document.getElementById('studentProfileContent').innerHTML = `
     <div class="profile-header"><div class="profile-avatar">${s.firstName[0]}</div><div class="profile-info"><h2>${studentFullName(s)}</h2><p style="color:var(--text3);font-size:13px">ห้อง ${cls?.name||'-'} · เลขที่ ${s.no}</p></div><div style="margin-left:auto;text-align:center">${getGradeCircle(sc.grade)}<div style="font-size:10px;color:var(--text3);margin-top:4px">เกรด</div></div></div>
     <div class="score-summary">
       <div class="score-box"><div class="score-box-val" style="color:var(--purple)">${sc.scaled}</div><div class="score-box-label">คะแนนรวม /${sc.maxDisplay}</div></div>
-      <div class="score-box"><div class="score-box-val" style="color:var(--teal)">${sc.totalPct}%</div><div class="score-box-label">เปอร์เซ็นต์รวม</div></div>
+      <div class="score-box"><div class="score-box-val" style="color:var(--teal)">${calculateGrade(sc.scaled)}</div><div class="score-box-label">ผลการเรียน</div></div>
       <div class="score-box"><div class="score-box-val" style="color:var(--amber)">${sc.workScaled}</div><div class="score-box-label">คะแนนเก็บ /${DB.settings.ratio_work}</div></div>
       <div class="score-box"><div class="score-box-val" style="color:var(--red)">${sc.finalScaled}</div><div class="score-box-label">สอบ /${DB.settings.ratio_final}</div></div>
     </div>
-    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">รายละเอียดชิ้นงานและสอบ</div>
+    <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">รายละเอียดชิ้นงานและสอบ (เทอม ${currentTerm})</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>ชื่อ</th><th>หมวด</th><th>คะแนนดิบ</th><th>%</th></tr></thead>
+        <thead><tr><th>ชื่อ/หน่วย</th><th>หมวด</th><th>คะแนนดิบ</th><th>%</th></tr></thead>
         <tbody>
           ${assigns.map(a => {
             const sc2 = DB.scores[studentId]?.[a.id];
             const pct2 = (sc2?.raw !== undefined && sc2.raw !== null) ? Math.round(sc2.raw/a.maxScore*100) : 0;
+            const label = a.cat==='homework'?`หน่วย ${a.unit}`:a.cat==='midterm'?'กลางปี':'ปลายปี';
             return `<tr>
-              <td style="font-size:12px">${a.title}</td>
-              <td><span class="badge ${a.cat==='final'?'badge-red':'badge-purple'}">${a.cat==='final'?'สอบ':'เก็บ'}</span></td>
+              <td style="font-size:12px"><b>${a.title}</b><br><span style="color:var(--text3);font-size:10px">${label}</span></td>
+              <td><span class="badge ${a.cat==='homework'?'badge-purple':'badge-red'}">${a.cat==='homework'?'เก็บ':'สอบ'}</span></td>
               <td>${sc2?.raw !== undefined ? `<b style="color:var(--purple)">${sc2.raw}</b>/<span style="color:var(--text3)">${a.maxScore}</span>` : '<span style="color:var(--text3)">—</span>'}</td>
               <td><div style="display:flex;align-items:center;gap:6px"><div class="bar-wrap" style="width:50px;height:5px"><div class="bar-fill" style="width:${pct2}%;background:${pct2>=80?'var(--teal)':pct2>=60?'var(--amber)':'var(--red)'}"></div></div><span style="font-size:11px">${sc2?.raw!==undefined?pct2+'%':'—'}</span></div></td>
             </tr>`;
@@ -912,22 +1096,33 @@ async function importStudents() {
 function renderAssignments() {
   const cat = document.getElementById('assignCatFilter').value, classId = document.getElementById('assignClassFilter').value;
   const list = DB.assignments.filter(a => (!cat || a.cat === cat) && (!classId || a.classId === 'ALL' || a.classId === classId));
-  document.getElementById('assignmentsTable').innerHTML = list.map((a,i) => `<tr><td>${i+1}</td><td><b style="color:var(--text)">${a.title}</b><div style="font-size:11px;color:var(--text3)">เดือน: ${a.due||'ไม่ระบุ'}</div></td><td><span class="badge ${a.cat==='final'?'badge-red':'badge-purple'}">${a.cat==='final'?'สอบ':'เก็บ'}</span></td><td><span class="badge badge-gray">${a.classId==='ALL'?'ทุกห้อง':getClass(a.classId)?.name}</span></td><td><b style="color:var(--purple)">${a.maxScore}</b></td><td><button class="btn btn-ghost btn-sm" onclick="goGrade('${a.id}')">⚡ กรอก</button> <button class="btn btn-danger btn-sm" onclick="deleteAssign('${a.id}')">🗑</button></td></tr>`).join('');
-}
-function goGrade(assignId) {
-  navigate('grading');
-  setTimeout(() => {
-    const a = getAssignment(assignId);
-    if (a && a.classId) {
-      document.getElementById('gradingClass').value = a.classId === 'ALL' ? DB.classes[0]?.id : a.classId;
-      loadGradingAssignments();
-      setTimeout(() => { document.getElementById('gradingAssignment').value = assignId; loadGradingTable(); }, 50);
-    }
-  }, 50);
+  document.getElementById('assignmentsTable').innerHTML = list.map((a,i) => `<tr>
+      <td>${i+1}</td>
+      <td><span class="badge badge-gray">T${a.term||1}</span></td>
+      <td><b style="color:var(--text)">${a.title}</b></td>
+      <td>${a.cat==='homework'?`<span class="badge badge-teal">หน่วย ${a.unit||'-'}</span>`:'-'}</td>
+      <td><span class="badge ${a.cat==='homework'?'badge-purple':'badge-red'}">${a.cat==='homework'?'เก็บ':a.cat==='midterm'?'กลางปี':'ปลายปี'}</span></td>
+      <td><span class="badge badge-gray">${a.classId==='ALL'?'ทุกห้อง':getClass(a.classId)?.name}</span></td>
+      <td><b style="color:var(--purple)">${a.maxScore}</b></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteAssign('${a.id}')">🗑</button></td>
+    </tr>`).join('');
 }
 async function addAssignment() {
-  const a = { id: 'ASN'+Date.now(), title: document.getElementById('new_assign_title').value, cat: document.getElementById('new_assign_cat').value, classId: document.getElementById('new_assign_class').value, maxScore: +document.getElementById('new_assign_max').value, due: document.getElementById('new_assign_due').value, active: true };
-  DB.assignments.push(a); closeModal('addAssignModal'); renderAssignments(); postAPI('saveAssignment', a);
+  const cat = document.getElementById('new_assign_cat').value;
+  const a = { 
+      id: 'ASN'+Date.now(), 
+      title: document.getElementById('new_assign_title').value, 
+      cat: cat, 
+      term: parseInt(document.getElementById('new_assign_term').value),
+      unit: cat === 'homework' ? parseInt(document.getElementById('new_assign_unit').value) : "",
+      classId: document.getElementById('new_assign_class').value, 
+      maxScore: +document.getElementById('new_assign_max').value, 
+      due: document.getElementById('new_assign_due').value, 
+      active: true 
+  };
+  DB.assignments.push(a); closeModal('addAssignModal'); renderAssignments(); 
+  toast('กำลังบันทึก (อย่าลืมเพิ่มคอลัมน์ term และ unit ใน Google Sheet)', 'info');
+  postAPI('saveAssignment', a);
 }
 async function deleteAssign(id) { if(confirm('ลบ?')) { DB.assignments = DB.assignments.filter(a=>a.id!==id); renderAssignments(); postAPI('deleteRow', {sheetName:'Assignments', idColumn:'id', idValue:id}); } }
 
@@ -935,7 +1130,10 @@ async function deleteAssign(id) { if(confirm('ลบ?')) { DB.assignments = DB.a
 function loadGradingAssignments() {
   const classId = document.getElementById('gradingClass').value, ga = document.getElementById('gradingAssignment');
   if (!classId) return ga.innerHTML = '<option value="">— เลือกชิ้นงาน —</option>';
-  ga.innerHTML = '<option value="">— เลือกชิ้นงาน —</option>' + DB.assignments.filter(a => a.classId === 'ALL' || a.classId === classId).map(a => `<option value="${a.id}">${a.title} (เต็ม ${a.maxScore})</option>`).join('');
+  ga.innerHTML = '<option value="">— เลือกชิ้นงาน —</option>' + DB.assignments.filter(a => a.classId === 'ALL' || a.classId === classId).map(a => {
+      const label = a.cat === 'homework' ? `หน่วย ${a.unit}` : a.cat === 'midterm' ? 'กลางปี' : 'ปลายปี';
+      return `<option value="${a.id}">เทอม ${a.term} | ${label} | ${a.title} (เต็ม ${a.maxScore})</option>`;
+  }).join('');
   document.getElementById('gradingTable').style.display = 'none'; document.getElementById('gradingEmpty').style.display = 'block'; document.getElementById('gradingInfo').style.display = 'none';
 }
 function loadGradingTable() {
@@ -953,18 +1151,20 @@ function loadGradingTable() {
       <td style="color:var(--text3)">${s.no}</td>
       <td><div style="font-weight:500">${studentFullName(s)}</div></td>
       <td style="text-align:center"><input class="score-input" type="number" value="${val}" min="0" max="${a.maxScore}" data-student="${s.id}" data-assign="${assignId}" onkeydown="if(event.key==='Enter'){event.preventDefault();let r=Array.from(document.querySelectorAll('.score-input'));let i=r.indexOf(this);if(i<r.length-1)r[i+1].focus();}"></td>
+      <td style="font-size:12px;color:var(--text3)">${val!==''?Math.round(val/a.maxScore*100)+'%':'-'}</td>
       <td><input class="input" type="text" value="${sc.url||''}" placeholder="URL ภาพ" style="font-size:11px;padding:5px"></td>
       <td><input class="input" type="text" value="${sc.note||''}" placeholder="หมายเหตุ" style="font-size:11px;padding:5px"></td>
     </tr>`;
   }).join('');
   document.getElementById('gradingDone').textContent = doneCount;
+  document.getElementById('gradingLeft').textContent = studs.length - doneCount;
 }
 async function saveAllScores() {
   const inputs = document.querySelectorAll('.score-input'), payload = [];
   inputs.forEach(inp => { 
     if (inp.value !== '') { 
-      const urlInp = inp.parentElement.nextElementSibling.querySelector('input').value;
-      const noteInp = inp.parentElement.nextElementSibling.nextElementSibling.querySelector('input').value;
+      const urlInp = inp.parentElement.nextElementSibling.nextElementSibling.querySelector('input').value;
+      const noteInp = inp.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.querySelector('input').value;
       payload.push({ student_id: inp.dataset.student, assignment_id: inp.dataset.assign, raw: inp.value, url: urlInp, note: noteInp }); 
       if(!DB.scores[inp.dataset.student]) DB.scores[inp.dataset.student]={}; 
       DB.scores[inp.dataset.student][inp.dataset.assign] = {raw: +inp.value, url: urlInp, note: noteInp}; 
@@ -975,7 +1175,7 @@ async function saveAllScores() {
   if(res.success) { toast('บันทึกสำเร็จ', 'success'); loadGradingTable(); } else toast('เกิดข้อผิดพลาด', 'error');
 }
 
-// ===== SUMMARY =====
+// ===== SUMMARY (เทอมเดียว) =====
 let summarySort = { key:'scaled', asc:false };
 function sortSummary(key) {
   if (summarySort.key === key) summarySort.asc = !summarySort.asc; else { summarySort.key = key; summarySort.asc = false; }
@@ -990,15 +1190,14 @@ function renderSummary() {
     const v = vals[summarySort.key] ?? 0; return summarySort.asc ? -v : v;
   });
 
-  const rWork = DB.settings.ratio_work, rFinal = DB.settings.ratio_final, maxDisp = DB.settings.semester == 1 ? Math.round((rWork+rFinal)/2) : (rWork+rFinal);
+  const rWork = DB.settings.ratio_work, rFinal = DB.settings.ratio_final, maxDisp = (rWork+rFinal);
   document.getElementById('label_ratio_work').textContent = rWork;
   document.getElementById('label_ratio_final').textContent = rFinal;
-  document.getElementById('label_ratio_total').textContent = (rWork+rFinal);
-  document.getElementById('label_term_max').textContent = maxDisp;
+  document.getElementById('label_ratio_total').textContent = maxDisp;
   
   document.getElementById('summaryScoreHeader').innerHTML = `รวม (โอน)<br><span style="font-size:10px;font-weight:400">/${maxDisp}</span> ↕`;
-  document.getElementById('th_work').innerHTML = `เก็บ (โอน)<br><span style="font-size:10px;font-weight:400">/${DB.settings.semester == 1 ? Math.round(rWork/2) : rWork}</span>`;
-  document.getElementById('th_final').innerHTML = `สอบ (โอน)<br><span style="font-size:10px;font-weight:400">/${DB.settings.semester == 1 ? Math.round(rFinal/2) : rFinal}</span>`;
+  document.getElementById('th_work').innerHTML = `เก็บ (โอน)<br><span style="font-size:10px;font-weight:400">/${rWork}</span>`;
+  document.getElementById('th_final').innerHTML = `สอบ (โอน)<br><span style="font-size:10px;font-weight:400">/${rFinal}</span>`;
 
   document.getElementById('summaryTable').innerHTML = studs.map((d,i) => `<tr>
     <td style="color:var(--text3);text-align:center">${i+1}</td>
@@ -1012,6 +1211,130 @@ function renderSummary() {
     <td>${getGradeCircle(d.sc.grade)}</td>
   </tr>`).join('');
 }
+
+
+// ===== YEARLY SUMMARY (ปพ.5 รายปี) =====
+function renderYearlySummary() {
+    const classId = document.getElementById('yearlyClassFilter').value;
+    const wrap = document.getElementById('yearlyTableWrap');
+    const empty = document.getElementById('yearlyEmpty');
+    
+    if (!classId) {
+        wrap.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+    wrap.style.display = 'block';
+    empty.style.display = 'none';
+
+    // 1. ดึง Assignment เฉพาะห้องนี้
+    const assigns = DB.assignments.filter(a => a.classId === 'ALL' || a.classId === classId);
+    
+    // หาหน่วยทั้งหมดของเทอม 1 และ เทอม 2 (เฉพาะ homework)
+    let t1Units = [...new Set(assigns.filter(a => a.term === 1 && a.cat === 'homework').map(a => a.unit))].sort((a,b)=>a-b);
+    let t2Units = [...new Set(assigns.filter(a => a.term === 2 && a.cat === 'homework').map(a => a.unit))].sort((a,b)=>a-b);
+    
+    // 2. สร้าง Header ของตาราง
+    let thead1 = `<tr><th rowspan="2" class="sticky-col" style="min-width:180px;">ชื่อ-นามสกุลนักเรียน</th>`;
+    let thead2 = `<tr>`;
+
+    // --- เทอม 1 ---
+    if(t1Units.length > 0) {
+        thead1 += `<th colspan="${t1Units.length + 3}" class="bg-t1">ภาคเรียนที่ 1</th>`;
+        t1Units.forEach(u => { thead2 += `<th class="bg-t1" style="font-size:10px;font-weight:400">หน่วย ${u}</th>`; });
+        thead2 += `<th class="bg-t1">รวมหน่วย<br><span style="font-size:9px;font-weight:400">(เทอม 1)</span></th>`;
+        thead2 += `<th class="bg-t1">สอบกลางปี</th>`;
+        thead2 += `<th class="bg-t1" style="color:var(--purple)">รวมเทอม 1</th>`;
+    } else {
+        thead1 += `<th colspan="3" class="bg-t1">ภาคเรียนที่ 1</th>`;
+        thead2 += `<th class="bg-t1">รวมหน่วย</th><th class="bg-t1">สอบกลางปี</th><th class="bg-t1">รวมเทอม 1</th>`;
+    }
+
+    // --- เทอม 2 ---
+    if(t2Units.length > 0) {
+        thead1 += `<th colspan="${t2Units.length + 2}" class="bg-t2">ภาคเรียนที่ 2</th>`;
+        t2Units.forEach(u => { thead2 += `<th class="bg-t2" style="font-size:10px;font-weight:400">หน่วย ${u}</th>`; });
+        thead2 += `<th class="bg-t2">รวมหน่วย<br><span style="font-size:9px;font-weight:400">(เทอม 2)</span></th>`;
+        thead2 += `<th class="bg-t2" style="color:var(--teal)">รวมคะแนนหน่วย<br><span style="font-size:9px;font-weight:400">(เทอม 1+2)</span></th>`;
+    } else {
+        thead1 += `<th colspan="2" class="bg-t2">ภาคเรียนที่ 2</th>`;
+        thead2 += `<th class="bg-t2">รวมหน่วย(ท2)</th><th class="bg-t2">รวมหน่วย(ท1+ท2)</th>`;
+    }
+
+    // --- สรุปผล ---
+    thead1 += `<th colspan="4" class="bg-sum">สรุปผลการประเมิน (รายปี)</th></tr>`;
+    thead2 += `<th class="bg-sum">สอบปลายปี</th>`;
+    thead2 += `<th class="bg-sum">รวมทั้งปี<br><span style="font-size:9px;font-weight:400">(100 คะแนน)</span></th>`;
+    thead2 += `<th class="bg-sum">เกรด</th>`;
+    thead2 += `<th class="bg-sum">ผลประเมิน</th></tr>`;
+
+    document.getElementById('yearlyThead').innerHTML = thead1 + thead2;
+
+    // 3. สร้างข้อมูลในตาราง
+    const studs = DB.students.filter(s => s.classId === classId).sort((a,b)=>a.no-b.no);
+    
+    document.getElementById('yearlyTbody').innerHTML = studs.map(s => {
+        let tr = `<tr><td class="sticky-col"><div style="font-size:10px;color:var(--text3)">เลขที่ ${s.no}</div><div style="font-weight:500">${studentFullName(s)}</div></td>`;
+        
+        let t1UnitSum = 0, t2UnitSum = 0;
+        let midtermScore = 0, finalScore = 0;
+
+        // คำนวณเทอม 1
+        t1Units.forEach(u => {
+            let sumU = 0;
+            assigns.filter(a => a.term === 1 && a.cat === 'homework' && a.unit === u).forEach(a => {
+                const sc = DB.scores[s.id]?.[a.id];
+                if(sc?.raw) sumU += sc.raw;
+            });
+            t1UnitSum += sumU;
+            tr += `<td class="bg-t1">${sumU || '-'}</td>`;
+        });
+        
+        assigns.filter(a => a.term === 1 && a.cat === 'midterm').forEach(a => {
+             const sc = DB.scores[s.id]?.[a.id];
+             if(sc?.raw) midtermScore += sc.raw;
+        });
+
+        const totalT1 = t1UnitSum + midtermScore;
+        tr += `<td class="bg-t1"><b>${t1UnitSum || '-'}</b></td>`;
+        tr += `<td class="bg-t1">${midtermScore || '-'}</td>`;
+        tr += `<td class="bg-t1"><b style="color:var(--purple)">${totalT1 || '-'}</b></td>`;
+
+        // คำนวณเทอม 2
+        t2Units.forEach(u => {
+            let sumU = 0;
+            assigns.filter(a => a.term === 2 && a.cat === 'homework' && a.unit === u).forEach(a => {
+                const sc = DB.scores[s.id]?.[a.id];
+                if(sc?.raw) sumU += sc.raw;
+            });
+            t2UnitSum += sumU;
+            tr += `<td class="bg-t2">${sumU || '-'}</td>`;
+        });
+
+        const totalUnits1and2 = t1UnitSum + t2UnitSum;
+        tr += `<td class="bg-t2"><b>${t2UnitSum || '-'}</b></td>`;
+        tr += `<td class="bg-t2"><b style="color:var(--teal)">${totalUnits1and2 || '-'}</b></td>`;
+
+        // สรุป
+        assigns.filter(a => a.term === 2 && a.cat === 'final').forEach(a => {
+             const sc = DB.scores[s.id]?.[a.id];
+             if(sc?.raw) finalScore += sc.raw;
+        });
+
+        const totalYearRaw = totalUnits1and2 + midtermScore + finalScore;
+        const grade = calculateGrade(totalYearRaw);
+        const passFail = totalYearRaw >= 50 ? '<span style="color:var(--teal);font-weight:bold">ผ่าน</span>' : '<span style="color:var(--red);font-weight:bold">ไม่ผ่าน</span>';
+
+        tr += `<td class="bg-sum">${finalScore || '-'}</td>`;
+        tr += `<td class="bg-sum"><b style="font-size:15px;color:var(--text)">${totalYearRaw || 0}</b></td>`;
+        tr += `<td class="bg-sum">${getGradeCircle(totalYearRaw > 0 ? grade : '-')}</td>`;
+        tr += `<td class="bg-sum">${totalYearRaw > 0 ? passFail : '-'}</td>`;
+
+        tr += `</tr>`;
+        return tr;
+    }).join('');
+}
+
 
 // ===== MONTHLY REPORT =====
 function renderMonthlyReport() {
@@ -1027,7 +1350,11 @@ function renderMonthlyReport() {
   if (monthAssigns.length === 0) { thead.innerHTML = `<th>ข้อมูลชิ้นงาน</th>`; tbody.innerHTML = `<tr><td style="text-align:center;padding:40px;color:var(--text3)">ไม่มีชิ้นงานในเดือนนี้</td></tr>`; stats.innerHTML = ''; return; }
   
   let maxTotal = 0, thHTML = `<th>เลขที่</th><th style="min-width:140px">ชื่อ-นามสกุล</th><th>ห้อง</th>`;
-  monthAssigns.forEach(a => { thHTML += `<th style="max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.title}<br><span style="font-size:10px;color:var(--purple);font-weight:400">(เต็ม ${a.maxScore})</span></th>`; maxTotal += a.maxScore; });
+  monthAssigns.forEach(a => { 
+      const label = a.cat === 'homework' ? `(หน่วย ${a.unit})` : '';
+      thHTML += `<th style="max-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.title}<br><span style="font-size:10px;color:var(--purple);font-weight:400">${label} เต็ม ${a.maxScore}</span></th>`; 
+      maxTotal += a.maxScore; 
+  });
   thHTML += `<th>รวมเดือนนี้<br><span style="font-size:10px;color:var(--purple);font-weight:400">(เต็ม ${maxTotal})</span></th>`;
   thead.innerHTML = `<tr>${thHTML}</tr>`;
   
@@ -1065,7 +1392,7 @@ function renderMissingWork() {
   document.getElementById('missingEmpty').style.display = missingData.length ? 'none' : 'block';
   document.getElementById('missingStats').innerHTML = `<div class="stat-card red"><div class="stat-label">นักเรียนค้างงาน</div><div class="stat-val">${missingData.length} คน</div></div><div class="stat-card orange"><div class="stat-label">งานค้างรวม</div><div class="stat-val">${totalMissing} ชิ้น</div></div>`;
   
-  tbody.innerHTML = missingData.map(d => `<tr><td style="text-align:center">${d.s.no}</td><td><div style="font-weight:500">${studentFullName(d.s)}</div></td><td><span class="badge badge-gray">${getClass(d.s.classId)?.name}</span></td><td style="text-align:center"><b style="color:var(--red);font-size:16px">${d.missing.length}</b></td><td style="line-height:1.8">${d.missing.map(a=>`<span class="badge badge-red">${a.title}</span>`).join(' ')}</td></tr>`).join('');
+  tbody.innerHTML = missingData.map(d => `<tr><td style="text-align:center">${d.s.no}</td><td><div style="font-weight:500">${studentFullName(d.s)}</div></td><td><span class="badge badge-gray">${getClass(d.s.classId)?.name}</span></td><td style="text-align:center"><b style="color:var(--red);font-size:16px">${d.missing.length}</b></td><td style="line-height:1.8">${d.missing.map(a=>`<span class="badge badge-red">${a.title} ${a.cat==='homework'?`(หน่วย ${a.unit})`:''}</span>`).join(' ')}</td></tr>`).join('');
 }
 
 // ===== ATTENDANCE =====
@@ -1224,7 +1551,6 @@ async function saveSettings() {
   const res = await postAPI('saveSettings', payload);
   if(res.success) { 
     Object.assign(DB.settings, payload); 
-    // อัปเดต thresholds ใหม่
     DB.settings.grade_thresholds['4'] = payload.g4;
     DB.settings.grade_thresholds['3.5'] = payload.g3_5;
     DB.settings.grade_thresholds['3'] = payload.g3;
@@ -1235,6 +1561,7 @@ async function saveSettings() {
     
     updateSettingsUI(); 
     if(currentPage === 'summary') renderSummary();
+    if(currentPage === 'yearly-summary') renderYearlySummary();
     if(currentPage === 'students') renderStudents();
     toast('บันทึกสำเร็จ ✨', 'success'); 
   }
@@ -1242,3 +1569,4 @@ async function saveSettings() {
 </script>
 </body>
 </html>
+```eof
