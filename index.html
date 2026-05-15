@@ -821,66 +821,7 @@ async function postAPI(action, payload) {
 }
 
 // =========================================
-// 2. INITIALIZATION & LIFECYCLE
-// =========================================
-window.onload = async () => {
-  toast('กำลังเชื่อมต่อฐานข้อมูล...', 'info');
-  const data = await fetchAPI('getAllData');
-  if (data.error) return toast('เชื่อมต่อล้มเหลว: ' + data.error, 'error');
-
-  // Load and Map Data
-  DB.classes = (data.classes || []).map(c => ({...c, level: parseInt(c.level), room: parseInt(c.room)}));
-  DB.students = (data.students || []).map(s => ({...s, no: parseInt(s.no)}));
-  DB.assignments = (data.assignments || []).map(a => ({
-      ...a, 
-      maxScore: parseInt(a.maxScore), 
-      active: a.active === 'TRUE' || a.active === true,
-      term: a.term ? parseInt(a.term) : 1,
-      unit: a.unit ? parseInt(a.unit) : 1
-  }));
-  DB.attendance = data.attendance || [];
-  
-  DB.scores = {};
-  if (data.scores) {
-      data.scores.forEach(row => {
-          if (!DB.scores[row.student_id]) DB.scores[row.student_id] = {};
-          DB.scores[row.student_id][row.assignment_id] = { raw: parseInt(row.raw) || 0, url: row.url || '', note: row.note || '' };
-      });
-  }
-
-  // Load Settings
-  if (data.settings && data.settings.length > 0) {
-    const setObj = {}; data.settings.forEach(row => { setObj[row.key] = row.value; });
-    DB.settings.director_name = setObj.director_name || '';
-    DB.settings.academic_name = setObj.academic_name || '';
-    DB.settings.teacher_name = setObj.teacher_name || '';
-    DB.settings.semester = parseInt(setObj.semester) || 1;
-    DB.settings.year = parseInt(setObj.year) || 2568;
-    DB.settings.ratio_work = parseInt(setObj.ratio_work) || 70;
-    DB.settings.ratio_final = parseInt(setObj.ratio_final) || 30;
-    
-    ['4','3.5','3','2.5','2','1.5','1'].forEach(g => {
-        const key = g.replace('.','_');
-        if(setObj[`g${key}`]) DB.settings.grade_thresholds[g] = parseInt(setObj[`g${key}`]);
-    });
-  }
-
-  // UI Setup
-  updateSettingsUI();
-  populateClassSelects();
-  
-  const todayStr = new Date().toISOString().split('T')[0];
-  document.getElementById('attDate').value = todayStr;
-  document.getElementById('attReportMonth').value = todayStr.substring(0,7);
-  document.getElementById('reportMonth').value = todayStr.substring(0,7);
-  document.getElementById('new_assign_due').value = todayStr;
-
-  renderDashboard();
-  toast('โหลดข้อมูลสำเร็จ ✨', 'success');
-};
-
-// =========================================
-// 3. UI HELPERS & NAVIGATION
+// 2. UI HELPERS & NAVIGATION
 // =========================================
 function updateSettingsUI() {
   document.getElementById('setting_director').value = DB.settings.director_name || '';
@@ -960,7 +901,7 @@ function populateClassSelects() {
 }
 
 // =========================================
-// 4. DATA LOGIC & CALCULATIONS
+// 3. DATA LOGIC & CALCULATIONS
 // =========================================
 function getClass(id) { return DB.classes.find(c => c.id === id); }
 function getStudent(id) { return DB.students.find(s => s.id === id); }
@@ -1036,7 +977,7 @@ function classProgress(classId) {
 }
 
 // =========================================
-// 5. RENDER FUNCTIONS
+// 4. RENDER FUNCTIONS
 // =========================================
 
 // --- DASHBOARD ---
@@ -1083,21 +1024,6 @@ function renderClasses() {
   `).join('');
 }
 
-async function deleteClass(id) {
-  if(confirm('ลบห้องเรียนนี้? ข้อมูลในระบบจะถูกลบออก')) {
-    DB.classes = DB.classes.filter(c=>c.id!==id);
-    renderClasses();
-    toast('กำลังลบในฐานข้อมูล...', 'info');
-    const res = await postAPI('deleteRow', {sheetName:'Classes', idColumn:'id', idValue:id});
-    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
-  }
-}
-
-async function addClass() {
-  const c = { id: 'CLS'+Date.now(), name: `ป.${document.getElementById('new_class_level').value}/${document.getElementById('new_class_room').value}`, level: +document.getElementById('new_class_level').value, room: +document.getElementById('new_class_room').value };
-  DB.classes.push(c); closeModal('addClassModal'); populateClassSelects(); renderClasses(); postAPI('saveClass', c);
-}
-
 // --- STUDENTS ---
 function renderStudents() {
   const search = document.getElementById('studentSearch').value.toLowerCase();
@@ -1131,16 +1057,6 @@ function renderStudents() {
       </tr>
     `;
   }).join('');
-}
-
-async function deleteStudent(id) {
-  if(confirm('ลบนักเรียนรายนี้?')) {
-    DB.students = DB.students.filter(s=>s.id!==id);
-    renderStudents();
-    toast('กำลังลบในฐานข้อมูล...', 'info');
-    const res = await postAPI('deleteRow', {sheetName:'Students', idColumn:'id', idValue:id});
-    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
-  }
 }
 
 function showStudentProfile(studentId) {
@@ -1193,37 +1109,8 @@ function showStudentProfile(studentId) {
     </div>`;
 }
 
-async function addStudent() {
-  const s = { 
-      id: 'STU'+Date.now(), 
-      classId: document.getElementById('new_stu_class').value, 
-      no: +document.getElementById('new_stu_no').value, 
-      title: document.getElementById('new_stu_title').value, 
-      firstName: document.getElementById('new_stu_fname').value, 
-      lastName: document.getElementById('new_stu_lname').value 
-  };
-  DB.students.push(s); closeModal('addStudentModal'); renderStudents(); postAPI('saveStudent', s);
-}
-
-async function importStudents() {
-  const classId = document.getElementById('import_stu_class').value;
-  const rawData = document.getElementById('import_stu_data').value.trim();
-  if (!classId) return toast('กรุณาเลือกห้องเรียนก่อน', 'error');
-  const lines = rawData.split('\n'); const rowsToAppend = [];
-  lines.forEach((line, i) => {
-    const parts = line.trim().split(/\s+/); 
-    if (parts.length >= 4 && !isNaN(parseInt(parts[0]))) {
-      const id = 'STU' + String(Date.now() + i).slice(-6) + Math.floor(Math.random()*1000);
-      const stu = { id, classId, no: parseInt(parts[0]), title: parts[1], firstName: parts[2], lastName: parts.slice(3).join(' ') };
-      rowsToAppend.push(stu); DB.students.push(stu);
-    }
-  });
-  closeModal('importStudentModal'); renderStudents();
-  if (rowsToAppend.length > 0) { 
-      toast(`กำลังนำเข้า ${rowsToAppend.length} คน...`, 'info'); 
-      await postAPI('importStudentsBulk', rowsToAppend); 
-      toast('นำเข้าเรียบร้อย', 'success'); 
-  }
+function showStudentProfileContent(studentId) {
+    showStudentProfile(studentId);
 }
 
 // --- ASSIGNMENTS ---
@@ -1244,34 +1131,6 @@ function renderAssignments() {
       <td class="print-hide"><button class="btn btn-danger btn-sm" onclick="deleteAssign('${a.id}')">🗑</button></td>
     </tr>
   `).join('');
-}
-
-async function deleteAssign(id) {
-  if(confirm('ลบชิ้นงาน/การสอบนี้?')) {
-    DB.assignments = DB.assignments.filter(a=>a.id!==id);
-    renderAssignments();
-    toast('กำลังลบในฐานข้อมูล...', 'info');
-    const res = await postAPI('deleteRow', {sheetName:'Assignments', idColumn:'id', idValue:id});
-    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
-  }
-}
-
-async function addAssignment() {
-  const cat = document.getElementById('new_assign_cat').value;
-  const a = { 
-      id: 'ASN'+Date.now(), 
-      title: document.getElementById('new_assign_title').value, 
-      cat: cat, 
-      term: parseInt(document.getElementById('new_assign_term').value),
-      unit: cat === 'homework' ? parseInt(document.getElementById('new_assign_unit').value) : "",
-      classId: document.getElementById('new_assign_class').value, 
-      maxScore: +document.getElementById('new_assign_max').value, 
-      due: document.getElementById('new_assign_due').value, 
-      active: true 
-  };
-  DB.assignments.push(a); closeModal('addAssignModal'); renderAssignments(); 
-  toast('กำลังบันทึก...', 'info');
-  postAPI('saveAssignment', a);
 }
 
 function toggleUnitInput() {
@@ -1329,22 +1188,6 @@ function loadGradingTable() {
   
   document.getElementById('gradingDone').textContent = doneCount;
   document.getElementById('gradingLeft').textContent = studs.length - doneCount;
-}
-
-async function saveAllScores() {
-  const inputs = document.querySelectorAll('.score-input'), payload = [];
-  inputs.forEach(inp => { 
-    if (inp.value !== '') { 
-      const urlInp = inp.parentElement.nextElementSibling.nextElementSibling.querySelector('input').value;
-      const noteInp = inp.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.querySelector('input').value;
-      payload.push({ student_id: inp.dataset.student, assignment_id: inp.dataset.assign, raw: inp.value, url: urlInp, note: noteInp }); 
-      if(!DB.scores[inp.dataset.student]) DB.scores[inp.dataset.student]={}; 
-      DB.scores[inp.dataset.student][inp.dataset.assign] = {raw: +inp.value, url: urlInp, note: noteInp}; 
-    } 
-  });
-  if (!payload.length) return toast('ไม่มีข้อมูลให้บันทึก', 'warning');
-  toast('กำลังบันทึก...', 'info'); const res = await postAPI('saveScoreBulk', payload);
-  if(res.success) { toast('บันทึกสำเร็จ', 'success'); loadGradingTable(); } else toast('เกิดข้อผิดพลาด', 'error');
 }
 
 // --- TERM SUMMARY ---
@@ -1413,7 +1256,6 @@ function renderYearlySummary() {
     let thead1 = `<tr><th rowspan="2" class="sticky-col" style="min-width:140px;">ชื่อ-นามสกุลนักเรียน</th>`;
     let thead2 = `<tr>`;
 
-    // Term 1 Headers
     if(t1Units.length > 0) {
         thead1 += `<th colspan="${t1Units.length + 3}" class="bg-t1">ภาคเรียนที่ 1</th>`;
         t1Units.forEach(u => { thead2 += `<th class="bg-t1" style="font-weight:400">หน่วย ${u}</th>`; });
@@ -1423,7 +1265,6 @@ function renderYearlySummary() {
         thead2 += `<th class="bg-t1">รวมหน่วย</th><th class="bg-t1">กลางปี</th><th class="bg-t1">รวม T1</th>`;
     }
 
-    // Term 2 Headers
     if(t2Units.length > 0) {
         thead1 += `<th colspan="${t2Units.length + 2}" class="bg-t2">ภาคเรียนที่ 2</th>`;
         t2Units.forEach(u => { thead2 += `<th class="bg-t2" style="font-weight:400">หน่วย ${u}</th>`; });
@@ -1433,7 +1274,6 @@ function renderYearlySummary() {
         thead2 += `<th class="bg-t2">รวม(ท2)</th><th class="bg-t2">รวม(T1+T2)</th>`;
     }
 
-    // Summary Headers
     thead1 += `<th colspan="4" class="bg-sum">สรุปผลประเมิน (รายปี)</th></tr>`;
     thead2 += `<th class="bg-sum">ปลายปี</th><th class="bg-sum">รวมทั้งปี<br>(100)</th><th class="bg-sum">เกรด</th><th class="bg-sum">ประเมิน</th></tr>`;
 
@@ -1560,9 +1400,8 @@ function renderMonthlyReport() {
 }
 
 // =========================================
-// 6. ATTENDANCE SYSTEM
+// 5. ATTENDANCE SYSTEM
 // =========================================
-let currentAttRecords = {};
 function toggleHolidayMode() {
   const isHoliday = document.getElementById('attIsHoliday').checked;
   document.getElementById('holidayBox').style.display = isHoliday ? 'block' : 'none';
@@ -1579,6 +1418,7 @@ function getAttState(classId, dateStr) {
   return state;
 }
 
+let currentAttRecords = {};
 function loadAttendanceList() {
   const dateStr = document.getElementById('attDate').value, classId = document.getElementById('attClass').value;
   const wrap = document.getElementById('attendanceWrap'), holBox = document.getElementById('holidayBox'), isHolCheckbox = document.getElementById('attIsHoliday');
@@ -1617,6 +1457,7 @@ function markAtt(sId, status) {
     grp.querySelector(`.st-${status}`).classList.add('active');
   }
 }
+
 function setAllAttendance(status) {
   const classId = document.getElementById('attClass').value;
   DB.students.filter(s => s.classId === classId).forEach(s => markAtt(s.id, status));
@@ -1692,8 +1533,110 @@ function renderAttendanceReport() {
 
 
 // =========================================
-// 7. ACTION & SAVE FUNCTIONS
+// 6. ACTION & SAVE FUNCTIONS
 // =========================================
+async function deleteClass(id) {
+  if(confirm('ลบห้องเรียนนี้? ข้อมูลในระบบจะถูกลบออก')) {
+    DB.classes = DB.classes.filter(c=>c.id!==id);
+    renderClasses();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Classes', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
+}
+
+async function addClass() {
+  const c = { id: 'CLS'+Date.now(), name: `ป.${document.getElementById('new_class_level').value}/${document.getElementById('new_class_room').value}`, level: +document.getElementById('new_class_level').value, room: +document.getElementById('new_class_room').value };
+  DB.classes.push(c); closeModal('addClassModal'); populateClassSelects(); renderClasses(); postAPI('saveClass', c);
+}
+
+async function deleteStudent(id) {
+  if(confirm('ลบนักเรียนรายนี้?')) {
+    DB.students = DB.students.filter(s=>s.id!==id);
+    renderStudents();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Students', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
+}
+
+async function addStudent() {
+  const s = { 
+      id: 'STU'+Date.now(), 
+      classId: document.getElementById('new_stu_class').value, 
+      no: +document.getElementById('new_stu_no').value, 
+      title: document.getElementById('new_stu_title').value, 
+      firstName: document.getElementById('new_stu_fname').value, 
+      lastName: document.getElementById('new_stu_lname').value 
+  };
+  DB.students.push(s); closeModal('addStudentModal'); renderStudents(); postAPI('saveStudent', s);
+}
+
+async function importStudents() {
+  const classId = document.getElementById('import_stu_class').value;
+  const rawData = document.getElementById('import_stu_data').value.trim();
+  if (!classId) return toast('กรุณาเลือกห้องเรียนก่อน', 'error');
+  const lines = rawData.split('\n'); const rowsToAppend = [];
+  lines.forEach((line, i) => {
+    const parts = line.trim().split(/\s+/); 
+    if (parts.length >= 4 && !isNaN(parseInt(parts[0]))) {
+      const id = 'STU' + String(Date.now() + i).slice(-6) + Math.floor(Math.random()*1000);
+      const stu = { id, classId, no: parseInt(parts[0]), title: parts[1], firstName: parts[2], lastName: parts.slice(3).join(' ') };
+      rowsToAppend.push(stu); DB.students.push(stu);
+    }
+  });
+  closeModal('importStudentModal'); renderStudents();
+  if (rowsToAppend.length > 0) { 
+      toast(`กำลังนำเข้า ${rowsToAppend.length} คน...`, 'info'); 
+      await postAPI('importStudentsBulk', rowsToAppend); 
+      toast('นำเข้าเรียบร้อย', 'success'); 
+  }
+}
+
+async function deleteAssign(id) {
+  if(confirm('ลบชิ้นงาน/การสอบนี้?')) {
+    DB.assignments = DB.assignments.filter(a=>a.id!==id);
+    renderAssignments();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Assignments', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
+}
+
+async function addAssignment() {
+  const cat = document.getElementById('new_assign_cat').value;
+  const a = { 
+      id: 'ASN'+Date.now(), 
+      title: document.getElementById('new_assign_title').value, 
+      cat: cat, 
+      term: parseInt(document.getElementById('new_assign_term').value),
+      unit: cat === 'homework' ? parseInt(document.getElementById('new_assign_unit').value) : "",
+      classId: document.getElementById('new_assign_class').value, 
+      maxScore: +document.getElementById('new_assign_max').value, 
+      due: document.getElementById('new_assign_due').value, 
+      active: true 
+  };
+  DB.assignments.push(a); closeModal('addAssignModal'); renderAssignments(); 
+  toast('กำลังบันทึก (อย่าลืมเพิ่มคอลัมน์ term และ unit ใน Google Sheet)', 'info');
+  postAPI('saveAssignment', a);
+}
+
+async function saveAllScores() {
+  const inputs = document.querySelectorAll('.score-input'), payload = [];
+  inputs.forEach(inp => { 
+    if (inp.value !== '') { 
+      const urlInp = inp.parentElement.nextElementSibling.nextElementSibling.querySelector('input').value;
+      const noteInp = inp.parentElement.nextElementSibling.nextElementSibling.nextElementSibling.querySelector('input').value;
+      payload.push({ student_id: inp.dataset.student, assignment_id: inp.dataset.assign, raw: inp.value, url: urlInp, note: noteInp }); 
+      if(!DB.scores[inp.dataset.student]) DB.scores[inp.dataset.student]={}; 
+      DB.scores[inp.dataset.student][inp.dataset.assign] = {raw: +inp.value, url: urlInp, note: noteInp}; 
+    } 
+  });
+  if (!payload.length) return toast('ไม่มีข้อมูลให้บันทึก', 'warning');
+  toast('กำลังบันทึก...', 'info'); const res = await postAPI('saveScoreBulk', payload);
+  if(res.success) { toast('บันทึกสำเร็จ', 'success'); loadGradingTable(); } else toast('เกิดข้อผิดพลาด', 'error');
+}
+
 async function saveAttendance() {
   const classId = document.getElementById('attClass').value, dateStr = document.getElementById('attDate').value;
   const isHoliday = document.getElementById('attIsHoliday').checked, note = document.getElementById('attHolidayNote').value;
@@ -1752,9 +1695,10 @@ async function saveSettings() {
   }
 }
 
-function showStudentProfileContent(studentId) {
+// Global scope alias for inline onclick
+window.showStudentProfileContent = function(studentId) {
     showStudentProfile(studentId);
-}
+};
 </script>
 </body>
 </html>
