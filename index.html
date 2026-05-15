@@ -1008,11 +1008,19 @@ function renderDashboard() {
 function renderClasses() {
   document.getElementById('classesTable').innerHTML = DB.classes.map(c => `<tr><td><b style="color:var(--text)">${c.name}</b></td><td><span class="badge badge-purple">ป.${c.level}</span></td><td>${DB.students.filter(s=>s.classId===c.id).length} คน</td><td><button class="btn btn-danger btn-sm" onclick="deleteClass('${c.id}')">🗑</button></td></tr>`).join('');
 }
+async function deleteClass(id) {
+  if(confirm('ลบห้องเรียนนี้? ข้อมูลในระบบจะถูกลบออก')) {
+    DB.classes = DB.classes.filter(c=>c.id!==id);
+    renderClasses();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Classes', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
+}
 async function addClass() {
   const c = { id: 'CLS'+Date.now(), name: `ป.${document.getElementById('new_class_level').value}/${document.getElementById('new_class_room').value}`, level: +document.getElementById('new_class_level').value, room: +document.getElementById('new_class_room').value };
   DB.classes.push(c); closeModal('addClassModal'); populateClassSelects(); renderClasses(); postAPI('saveClass', c);
 }
-async function deleteClass(id) { if(confirm('ลบห้องเรียนนี้?')) { DB.classes = DB.classes.filter(c=>c.id!==id); renderClasses(); postAPI('deleteRow', {sheetName:'Classes', idColumn:'id', idValue:id}); } }
 
 // ===== STUDENTS & PROFILE =====
 function renderStudents() {
@@ -1030,6 +1038,16 @@ function renderStudents() {
       <td><button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')">🗑</button></td>
     </tr>`;
   }).join('');
+}
+
+async function deleteStudent(id) {
+  if(confirm('ลบนักเรียนรายนี้?')) {
+    DB.students = DB.students.filter(s=>s.id!==id);
+    renderStudents();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Students', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
 }
 
 function showStudentProfile(studentId) {
@@ -1073,7 +1091,6 @@ async function addStudent() {
   const s = { id: 'STU'+Date.now(), classId: document.getElementById('new_stu_class').value, no: +document.getElementById('new_stu_no').value, title: document.getElementById('new_stu_title').value, firstName: document.getElementById('new_stu_fname').value, lastName: document.getElementById('new_stu_lname').value };
   DB.students.push(s); closeModal('addStudentModal'); renderStudents(); postAPI('saveStudent', s);
 }
-async function deleteStudent(id) { if(confirm('ลบนักเรียนนี้?')) { DB.students = DB.students.filter(s=>s.id!==id); renderStudents(); postAPI('deleteRow', {sheetName:'Students', idColumn:'id', idValue:id}); } }
 
 async function importStudents() {
   const classId = document.getElementById('import_stu_class').value;
@@ -1107,6 +1124,15 @@ function renderAssignments() {
       <td><button class="btn btn-danger btn-sm" onclick="deleteAssign('${a.id}')">🗑</button></td>
     </tr>`).join('');
 }
+async function deleteAssign(id) {
+  if(confirm('ลบชิ้นงาน/การสอบนี้?')) {
+    DB.assignments = DB.assignments.filter(a=>a.id!==id);
+    renderAssignments();
+    toast('กำลังลบในฐานข้อมูล...', 'info');
+    const res = await postAPI('deleteRow', {sheetName:'Assignments', idColumn:'id', idValue:id});
+    if(res && res.success) toast('ลบจากฐานข้อมูลสำเร็จ', 'success'); else toast('เกิดข้อผิดพลาดในการลบ', 'error');
+  }
+}
 async function addAssignment() {
   const cat = document.getElementById('new_assign_cat').value;
   const a = { 
@@ -1124,7 +1150,6 @@ async function addAssignment() {
   toast('กำลังบันทึก (อย่าลืมเพิ่มคอลัมน์ term และ unit ใน Google Sheet)', 'info');
   postAPI('saveAssignment', a);
 }
-async function deleteAssign(id) { if(confirm('ลบ?')) { DB.assignments = DB.assignments.filter(a=>a.id!==id); renderAssignments(); postAPI('deleteRow', {sheetName:'Assignments', idColumn:'id', idValue:id}); } }
 
 // ===== SPEED GRADING =====
 function loadGradingAssignments() {
