@@ -217,25 +217,76 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 .toast.error{border-left:3px solid var(--red)}
 .toast.info{border-left:3px solid var(--purple)}
 
-/* ===== PRINT STYLES ===== */
+/* ===== PRINT STYLES (A4 PORTRAIT) ===== */
 .print-signatures { display: none; justify-content: space-around; margin-top: 50px; text-align: center; color: var(--text); }
 @media print {
-  @page { size: landscape; margin: 10mm; }
-  body { background: white; color: black; }
+  /* ตั้งค่าหน้ากระดาษเป็น A4 แนวตั้ง */
+  @page { size: A4 portrait; margin: 10mm; }
+  
+  /* ปลดล็อกโครงสร้างเว็บทั้งหมดให้รันหน้า 2,3,4 ได้ */
+  html, body, .app, .main, .content { 
+    height: auto !important; 
+    overflow: visible !important; 
+    display: block !important; 
+    background: white !important; 
+    color: black !important; 
+  }
+  
+  /* ซ่อนเมนูและปุ่มที่ไม่จำเป็นตอนพิมพ์ */
   .sidebar, .topbar, .btn, .toolbar, .page-header p, .toast-wrap, .print-hide, .card { box-shadow: none; border: none; }
-  .sidebar, .topbar, .btn, .page-header p, .toast-wrap { display: none !important; }
-  .main { overflow: visible; background: white; }
-  .content { padding: 0; }
+  .sidebar, .topbar, .btn, .page-header p, .toast-wrap, .empty { display: none !important; }
+  .content { padding: 0 !important; }
   .page { display: none !important; }
   #page-summary.active, #page-yearly-summary.active, #page-monthly.active, #page-attendance-report.active, #page-missing.active { display: block !important; }
-  .table-wrap, .cal-wrap { border: 1px solid #ccc; overflow: visible !important; background: white; }
-  table th { background: #eee !important; color: black !important; border-bottom: 1px solid #aaa !important; }
-  table td { border-bottom: 1px solid #ccc !important; color: black !important; }
-  .cal-table th, .cal-table td { border: 1px solid #ccc !important; font-size: 10px !important; }
-  .cal-cell.sun, .cal-cell.sat { background: #f9f9f9 !important; }
-  .cal-cell.hol { background: #e0e0e0 !important; color: black !important; }
-  .grade-circle, .badge { border: 1px solid black; background: transparent !important; color: black !important; }
-  .print-signatures { display: flex !important; color: black !important; }
+  
+  /* ปรับแต่งตารางทั่วไปให้พอดี A4 แนวตั้ง */
+  .table-wrap, .cal-wrap { 
+    border: none !important; 
+    overflow: visible !important; 
+    background: white; 
+    width: 100% !important; 
+    max-width: 100% !important; 
+    margin: 0 !important; 
+    padding: 0 !important; 
+  }
+  table { 
+    width: 100% !important; 
+    table-layout: auto !important; 
+    border-collapse: collapse !important; 
+    font-size: 9px !important; 
+  }
+  th, td { 
+    border: 1px solid #666 !important; 
+    color: black !important; 
+    padding: 4px 3px !important; 
+    white-space: normal !important; 
+    word-break: break-word; 
+    line-height: 1.2; 
+  }
+  th { background: #f0f0f0 !important; font-weight: bold !important; text-align: center; }
+  
+  /* แก้ปัญหาหัวตารางและคอลัมน์เหลื่อมกันตอนพิมพ์หลายหน้า */
+  .sticky-col { position: static !important; } 
+  tbody tr { page-break-inside: avoid !important; }
+  
+  /* บีบอัดตารางเข้าเรียน (Attendance 31 วัน) ให้เข้ากับ A4 แนวตั้ง */
+  .cal-table th, .cal-table td { padding: 2px 1px !important; font-size: 7.5px !important; text-align: center; }
+  .cal-cell { width: auto !important; min-width: auto !important; }
+  .day-header { font-size: 6.5px !important; }
+  
+  /* บีบอัดตารางรายปี / รายเดือน */
+  .yearly-table th, .yearly-table td { font-size: 8px !important; padding: 3px 2px !important; }
+  
+  /* ลบเอฟเฟกต์สีและกราฟหลอดเพื่อประหยัดพื้นที่กระดาษ */
+  .bar-wrap { display: none !important; } 
+  .grade-circle { border: 1px solid black !important; background: transparent !important; color: black !important; width: auto !important; height: auto !important; border-radius: 4px !important; padding: 1px 4px !important; }
+  .badge { border: 1px solid #777 !important; background: transparent !important; color: black !important; border-radius: 4px !important; padding: 1px 3px !important; font-size: 8px !important; }
+  .bg-t1, .bg-t2, .bg-sum { background: transparent !important; }
+  .sun, .sat, .hol { background: #f5f5f5 !important; }
+  
+  /* จัดการลายเซ็นและหัวเรื่อง */
+  .print-signatures { display: flex !important; justify-content: space-between; page-break-inside: avoid; margin-top: 30px; padding: 0 20px; font-size: 11px; }
+  .page-header-left h1 { font-size: 16px; margin: 0 0 10px 0; border-bottom: 1px solid #000; padding-bottom: 5px; }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -555,12 +606,12 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
             <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์/PDF</button>
           </div>
         </div>
-        <div class="card" style="margin-bottom:16px; display:flex; gap:12px; align-items:center;">
+        <div class="card print-hide" style="margin-bottom:16px; display:flex; gap:12px; align-items:center;">
           <div><label>เดือน</label><input type="month" class="input" id="attReportMonth" onchange="renderAttendanceReport()"></div>
           <div><label>ห้องเรียน</label><select class="input" id="attReportClass" onchange="renderAttendanceReport()"></select></div>
         </div>
         
-        <div id="attReportStats" class="stat-grid" style="grid-template-columns: repeat(4, 1fr); display:none;">
+        <div id="attReportStats" class="stat-grid print-hide" style="grid-template-columns: repeat(4, 1fr); display:none;">
            <div class="stat-card teal"><div class="stat-label">มาเรียนเฉลี่ย</div><div class="stat-val" id="st_avg_present">0%</div></div>
            <div class="stat-card red"><div class="stat-label">ขาดเรียนรวม</div><div class="stat-val" id="st_tot_absent">0 <span style="font-size:12px">ครั้ง</span></div></div>
            <div class="stat-card orange"><div class="stat-label">ลากิจรวม</div><div class="stat-val" id="st_tot_leave">0 <span style="font-size:12px">ครั้ง</span></div></div>
@@ -588,13 +639,13 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
           <div class="page-header-left"><h1 id="monthlyReportTitle">📅 รายงานส่งงานประจำเดือน</h1><p>สรุปการส่งงานและคะแนนของนักเรียน</p></div>
           <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
         </div>
-        <div class="toolbar" style="background:var(--surface); padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+        <div class="toolbar print-hide" style="background:var(--surface); padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
           <div style="display:flex; gap:12px; align-items:center;">
             <div><label style="margin-bottom:2px">เลือกเดือน</label><input type="month" class="input" id="reportMonth" onchange="renderMonthlyReport()" style="width:auto"></div>
             <div><label style="margin-bottom:2px">เลือกห้องเรียน</label><select class="input" id="reportClass" onchange="renderMonthlyReport()" style="width:auto"><option value="">ทุกห้อง</option></select></div>
           </div>
         </div>
-        <div class="stat-grid" id="monthlyStats" style="margin-top:16px; grid-template-columns: repeat(3, 1fr);"></div>
+        <div class="stat-grid print-hide" id="monthlyStats" style="margin-top:16px; grid-template-columns: repeat(3, 1fr);"></div>
         <div class="card" style="margin-top:16px; padding:0; overflow:hidden;">
           <div class="table-wrap" style="border:none; border-radius:0;">
             <table>
@@ -615,11 +666,11 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
           <div class="page-header-left"><h1>🚨 ติดตามงานค้าง</h1><p>รายชื่อนักเรียนที่ยังไม่ได้ส่งงาน หรือยังไม่มีคะแนน</p></div>
           <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์รายชื่อ</button>
         </div>
-        <div class="card" style="margin-bottom:16px;">
+        <div class="card print-hide" style="margin-bottom:16px;">
           <label>เลือกห้องเรียน</label>
           <select class="input" id="missingClassFilter" onchange="renderMissingWork()" style="width:auto"><option value="">ทุกห้องเรียน</option></select>
         </div>
-        <div class="stat-grid" id="missingStats" style="grid-template-columns: repeat(2, 1fr);"></div>
+        <div class="stat-grid print-hide" id="missingStats" style="grid-template-columns: repeat(2, 1fr);"></div>
         <div class="empty" id="missingEmpty" style="display:none;"><div class="empty-icon">🎉</div><div class="empty-title">เยี่ยมมาก! ไม่มีงานค้าง</div></div>
         <div class="table-wrap" id="missingTableWrap">
           <table>
