@@ -226,30 +226,34 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
 @media print {
   @page { size: A4 portrait; margin: 10mm; }
   
-  /* 1. ปลดล็อคความสูงและซ่อน Scrollbar เพื่อให้บราวเซอร์รับรู้ว่ากระดาษยาวกว่า 1 หน้า */
-  html, body, .app, .main, .content, .page, .card, .table-wrap, .cal-wrap { 
+  /* 1. รีเซ็ตทุกอย่างเพื่อป้องกันปัญหาพิมพ์ได้หน้าเดียว (Page cut-off fix) */
+  *, *::before, *::after {
+    overflow: visible !important;
+  }
+
+  html, body, .app, .main, .content, .page { 
     height: auto !important; 
     min-height: auto !important;
     max-height: none !important;
     width: auto !important;
     max-width: none !important;
-    overflow: visible !important; 
     display: block !important; 
     position: static !important;
     background: white !important; 
     color: black !important;
-    box-shadow: none !important;
-    border: none !important;
     margin: 0 !important;
     padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
   }
   
   /* 2. ซ่อนเมนูและเครื่องมือที่ไม่ได้ใช้ในการพิมพ์ */
-  .sidebar, .topbar, .btn, .toolbar, .page-header p, .toast-wrap, .print-hide, .empty { 
+  .sidebar, .topbar, .btn, .toolbar, .page-header p, .toast-wrap, .print-hide, .empty, .modal-overlay { 
     display: none !important; 
   }
 
   /* 3. จัดการหัวเรื่องหน้ากระดาษ */
+  .page { display: none !important; }
   .page.active { display: block !important; }
   .page-header { margin: 0 0 15px 0 !important; display: block !important; }
   .page-header-left { width: 100% !important; text-align: center !important; }
@@ -257,16 +261,21 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
   .print-header-title { display: block !important; }
   
   /* 4. การจัดการตารางทั่วไป */
+  .table-wrap, .cal-wrap {
+    border: none !important;
+    background: transparent !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
   table { 
     width: 100% !important; 
     table-layout: auto !important; 
     border-collapse: collapse !important; 
     page-break-inside: auto !important;
   }
-  /* สำคัญ: บังคับให้หัวตารางปรากฏในทุกหน้ากระดาษ */
   thead { display: table-header-group !important; } 
   tfoot { display: table-footer-group !important; }
-  /* สำคัญ: บังคับไม่ให้ตัดแบ่งแถวครึ่งๆ กลางๆ ข้ามหน้า */
   tr { page-break-inside: avoid !important; page-break-after: auto !important; }
   
   th, td { 
@@ -280,22 +289,20 @@ label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px;font-wei
   }
   th { background-color: #f0f0f0 !important; font-weight: bold !important; text-align: center !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   
-  /* ปลดล็อคคอลัมน์ชื่อที่ถูกล็อค (Sticky) เพื่อไม่ให้ซ้อนทับกันเวลาพิมพ์ */
   .sticky-col, .cal-table th.sticky-col { position: static !important; box-shadow: none !important; }
   
   /* 5. จัดการตารางเข้าเรียน (บีบอัดสำหรับ 31 คอลัมน์ลง A4 Portrait) */
   .cal-table th, .cal-table td { 
     padding: 2px 1px !important; 
-    font-size: 7.5px !important; /* ย่อฟอนต์สุดๆ เพื่อให้ใส่ 31 วันพอ */
+    font-size: 7.5px !important; 
     text-align: center !important; 
   }
   .cal-table .sticky-col { 
-    width: auto !important; min-width: 0 !important; max-width: 100px !important; /* จำกัดความกว้างชื่อ */
+    width: auto !important; min-width: 0 !important; max-width: 100px !important; 
   }
   .cal-cell { width: auto !important; min-width: auto !important; }
   .day-header { font-size: 6px !important; }
   
-  /* สีพื้นหลังวันหยุด */
   .cal-cell.sun, .cal-cell.sat { background-color: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .cal-cell.hol { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   
