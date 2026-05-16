@@ -394,7 +394,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page active" id="page-dashboard">
         <div class="page-header">
           <div class="page-header-left"><h1>แดชบอร์ด</h1><p id="dashSubtitle">กำลังเชื่อมต่อข้อมูล...</p></div>
-          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
         </div>
         <div class="print-header-title" id="printTitleDashboard">ภาพรวมระบบ ArtGrade</div>
         <div class="grid-2-1">
@@ -420,7 +420,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           </div>
           <div style="display:flex;gap:8px" class="print-hide">
             <select class="input btn-sm" id="yearlyClassFilter" onchange="renderYearlySummary()"><option value="">เลือกห้องเรียน</option></select>
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์ตาราง</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
           </div>
         </div>
         <div class="print-header-title" id="printTitleYearly">สรุปผลการเรียนรายปี</div>
@@ -443,7 +443,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           <div class="page-header-left"><h1>สรุปคะแนนเทอม</h1><p>ตารางสรุปคะแนนรวมเฉพาะเทอมที่เลือก (เก็บ/สอบ)</p></div>
           <div style="display:flex;gap:8px" class="print-hide">
             <select class="input btn-sm" id="summaryClassFilter" onchange="renderSummary()"><option value="">ทุกห้อง</option></select>
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
           </div>
         </div>
         <div class="print-header-title" id="printTitleTerm">สรุปผลการเรียนรายเทอม</div>
@@ -483,7 +483,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-attendance">
         <div class="page-header">
           <div class="page-header-left"><h1>📍 เช็คชื่อเข้าเรียน</h1><p>บันทึกการเข้าเรียนรายคาบตามห้องเรียน</p></div>
-          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
         </div>
         <div class="print-header-title" id="printTitleAttendance">บันทึกการเข้าเรียน</div>
         <div class="card print-hide" style="margin-bottom:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
@@ -526,7 +526,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-attendance-report">
         <div class="page-header">
           <div class="page-header-left"><h1 id="printTitleAttReport">🗓️ รายงานเข้าเรียน</h1><p>สรุปสถิติการมาเรียนประจำเดือน</p></div>
-          <div style="display:flex;gap:8px" class="print-hide"><button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์/PDF</button></div>
+          <div style="display:flex;gap:8px" class="print-hide"><button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button></div>
         </div>
         
         <div class="card print-hide" style="margin-bottom:16px; display:flex; gap:12px; align-items:center;">
@@ -557,7 +557,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-monthly">
         <div class="page-header">
           <div class="page-header-left"><h1 id="monthlyReportTitle">📅 รายงานส่งงานประจำเดือน</h1><p>สรุปการส่งงานและคะแนนของนักเรียน</p></div>
-          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์รายงาน</button>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
         </div>
         <div class="toolbar print-hide" style="background:var(--surface); padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
           <div style="display:flex; gap:12px; align-items:center;">
@@ -583,7 +583,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-missing">
         <div class="page-header">
           <div class="page-header-left"><h1>🚨 ติดตามงานค้าง</h1><p>รายชื่อนักเรียนที่ยังไม่ได้ส่งงาน หรือยังไม่มีคะแนน</p></div>
-          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์รายชื่อ</button>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
         </div>
         <div class="print-header-title">รายงานงานค้างส่ง</div>
         <div class="card print-hide" style="margin-bottom:16px;">
@@ -609,7 +609,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         <div class="page-header">
           <div class="page-header-left"><h1>ห้องเรียน</h1><p>จัดการห้องเรียนและข้อมูลนักเรียน</p></div>
           <div class="print-hide" style="display:flex;gap:8px;">
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
             <button class="btn btn-primary" onclick="openModal('addClassModal')">+ เพิ่มห้องเรียน</button>
           </div>
         </div>
@@ -627,7 +627,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         <div class="page-header">
           <div class="page-header-left"><h1>นักเรียน</h1><p>รายชื่อนักเรียนทั้งหมด (คลิกที่ชื่อเพื่อดูผลการเรียนรายบุคคล)</p></div>
           <div style="display:flex;gap:8px" class="print-hide">
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
             <button class="btn btn-ghost" onclick="openImportStudentModal()">📥 นำเข้าทีละห้อง</button>
             <button class="btn btn-primary" onclick="openModal('addStudentModal')">+ เพิ่มนักเรียน</button>
           </div>
@@ -650,7 +650,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         <div class="page-header">
           <div class="page-header-left"><h1>ชิ้นงาน / การสอบ</h1><p>จัดการชิ้นงาน กิจกรรมการเรียน และการสอบ (ระบุเทอมและหน่วยได้)</p></div>
           <div class="print-hide" style="display:flex;gap:8px;">
-            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-ghost btn-sm" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
             <button class="btn btn-primary" onclick="openModal('addAssignModal')">+ เพิ่มชิ้นงาน/สอบ</button>
           </div>
         </div>
@@ -676,7 +676,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-grading">
         <div class="page-header">
           <div class="page-header-left"><h1>⚡ Speed Grading</h1><p>กรอกคะแนนอย่างรวดเร็ว — กด Enter เพื่อเลื่อนไปคนถัดไป</p></div>
-          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="printReport()">🖨️ พิมพ์ / โหลด PDF</button>
         </div>
         <div class="print-header-title" id="printTitleGrading">ตารางกรอกคะแนน</div>
         <div class="card print-hide" style="margin-bottom:16px">
@@ -811,6 +811,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
     <div class="modal-header"><div class="modal-title">เพิ่มชิ้นงาน / สอบ</div><button class="modal-close" onclick="closeModal('addAssignModal')">✕</button></div>
     <div class="modal-body">
       <div class="form-group"><label>ชื่อชิ้นงาน หรือ ชื่อการสอบ</label><input type="text" class="input" id="new_assign_title" placeholder="เช่น วาดภาพจินตนาการ, สอบปลายภาค"></div>
+      
       <div class="form-row">
         <div class="form-group"><label>เทอม</label><select class="input" id="new_assign_term"><option value="1">เทอม 1</option><option value="2">เทอม 2</option></select></div>
         <div class="form-group">
@@ -820,10 +821,12 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           </select>
         </div>
       </div>
+      
       <div class="form-row">
         <div class="form-group" id="unitInputBox"><label>หน่วยการเรียนรู้ที่</label><input type="number" class="input" id="new_assign_unit" placeholder="เช่น 1" min="1" value="1"></div>
         <div class="form-group"><label>ห้องเรียน</label><select class="input" id="new_assign_class"><option value="ALL">ทุกห้อง</option></select></div>
       </div>
+      
       <div class="form-row">
         <div class="form-group"><label>คะแนนเต็มดิบ</label><input type="number" class="input" id="new_assign_max" value="20" min="1"></div>
         <div class="form-group"><label>กำหนดส่ง / วันที่สอบ</label><input type="date" class="input" id="new_assign_due"></div>
@@ -870,10 +873,17 @@ async function postAPI(action, payload) {
 // =========================================
 // 2. UI HELPERS & UTILITIES
 // =========================================
+function printReport() {
+    toast('💡 เคล็ดลับ: ในหน้าต่างถัดไป เปลี่ยนเครื่องพิมพ์ (Destination) เป็น "Save as PDF" เพื่อเซฟไฟล์ลงเครื่อง', 'info');
+    setTimeout(() => {
+        window.print();
+    }, 1500);
+}
+
 function toast(msg, type='info') {
   const el = document.createElement('div'); el.className = `toast ${type}`;
   el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'💡'}</span> ${msg}`;
-  document.getElementById('toastWrap').appendChild(el); setTimeout(() => el.remove(), 3000);
+  document.getElementById('toastWrap').appendChild(el); setTimeout(() => el.remove(), 4000);
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
@@ -1623,7 +1633,7 @@ function renderAttendanceReport() {
   let totalPres = 0, totalAbs = 0, totalLea = 0, totalSick = 0, totalExpected = 0;
   document.getElementById('attReportTbody').innerHTML = studs.map(s => {
     let sPres=0, sAbs=0, sLea=0, sSick=0;
-    let tdHTML = `<tr><td class="sticky-col" style="font-size:8pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;">${s.no}. ${studentFullName(s)}</td>`;
+    let tdHTML = `<tr><td class="sticky-col" style="font-size:8pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;">${s.no}. ${studentFullName(s)}</div></td>`;
     
     for(let d=1; d<=daysInMonth; d++) {
       const dayOfWeek = new Date(year, month-1, d).getDay(), dStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
