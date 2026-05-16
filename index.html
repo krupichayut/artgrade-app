@@ -220,98 +220,111 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
 .toast.info { border-left: 3px solid var(--purple); }
 
 /* =========================================================
-   7. 🖨️ PRINT STYLES (A4 PORTRAIT - FIXED PAGINATION)
+   7. PRINT STYLES — A4 PORTRAIT
 ========================================================= */
-.print-signatures { display: none; justify-content: space-around; margin-top: 50px; text-align: center; color: var(--text); }
-.print-header-title { display: none; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; color: black; }
+.print-only        { display: none; }
+.print-signatures  { display: none; justify-content: space-around; margin-top: 40px; text-align: center; }
+.print-header-title{ display: none; }
 
 @media print {
-  @page { size: A4 portrait; margin: 10mm; }
+  @page { size: A4 portrait; margin: 12mm 10mm 14mm 10mm; }
+
+  *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box !important; }
+  html { font-size: 9.5pt; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   
-  /* ทลายข้อจำกัดความสูง/Flexbox ให้บราวเซอร์รันกระดาษหน้า 2,3... ได้ */
-  *, *::before, *::after { overflow: visible !important; }
-  html, body, .app, .main, .content, .page, .card, .table-wrap, .cal-wrap { 
-    display: block !important; 
-    height: auto !important; 
-    min-height: auto !important;
-    max-height: none !important;
-    width: auto !important;
-    max-width: none !important;
-    position: static !important;
-    background: white !important; 
-    color: black !important;
-    box-shadow: none !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  
-  /* ซ่อนสิ่งที่ไม่ต้องพิมพ์ */
-  .sidebar, .topbar, .btn, .toolbar, .page-header p, .toast-wrap, .print-hide, .empty, .modal-overlay { 
-    display: none !important; 
+  body {
+    font-family: 'Sarabun', 'IBM Plex Sans Thai', sans-serif !important;
+    background: #fff !important; color: #000 !important;
+    overflow: visible !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    width: 100% !important;
   }
 
-  /* ส่วนหัวเรื่อง */
+  .sidebar, .topbar, .topbar-actions, .modal-overlay, .toast-wrap, .btn, .toolbar, 
+  .search-wrap, .att-group, .print-hide, .bar-wrap, .profile-avatar, .logo-icon, .empty { 
+      display: none !important; 
+  }
+
+  .app, .main, .content, .page, .page.active, .card, .table-wrap, .cal-wrap, 
+  #attReportTableWrap, .grid-2-1, .stat-grid {
+    display: block !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important;
+    overflow: visible !important; position: static !important;
+  }
+
   .page { display: none !important; }
   .page.active { display: block !important; }
-  .page-header { margin: 0 0 15px 0 !important; display: block !important; }
-  .page-header-left { width: 100% !important; text-align: center !important; }
-  .page-header-left h1 { font-size: 16px !important; margin: 0 !important; border:none !important; padding-bottom: 5px; border-bottom: 1px solid black !important;}
-  .print-header-title { display: block !important; font-size: 14px; margin-bottom: 10px; }
-  
-  /* การจัดการตารางทั่วไปให้แตกหน้าได้ */
-  table { 
-    width: 100% !important; 
-    table-layout: auto !important; 
-    border-collapse: collapse !important; 
-    page-break-inside: auto !important;
-    margin-bottom: 20px !important;
-  }
-  thead { display: table-header-group !important; } 
+  .content { padding: 0 !important; width: 100% !important; }
+  .table-wrap { border: none !important; border-radius: 0 !important; background: transparent !important; margin-bottom: 6mm !important; width: 100% !important; }
+  .card { background: #fff !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+  .grid-2-1 { gap: 0 !important; }
+  .grid-2-1 > .card { margin-bottom: 6mm !important; }
+
+  .page-header { display: block !important; margin-bottom: 4px !important; page-break-after: avoid !important; break-after: avoid !important; }
+  .page-header-left { text-align: center !important; width: 100% !important; }
+  .page-header-left h1 { font-size: 13pt !important; font-weight: 700 !important; color: #000 !important; border-bottom: 1.5px solid #000 !important; padding-bottom: 3px !important; margin-bottom: 3px !important; page-break-after: avoid !important; }
+  .page-header-left p { display: none !important; }
+
+  .print-header-title { display: block !important; text-align: center !important; font-size: 9.5pt !important; color: #333 !important; margin-bottom: 5px !important; page-break-after: avoid !important; }
+
+  table { width: 100% !important; border-collapse: collapse !important; table-layout: auto !important; font-size: 8.5pt !important; page-break-inside: auto !important; break-inside: auto !important; margin-bottom: 0 !important; }
+  thead { display: table-header-group !important; }
   tfoot { display: table-footer-group !important; }
-  tr { page-break-inside: avoid !important; page-break-after: auto !important; }
+  tbody { display: table-row-group   !important; }
+  tr { page-break-inside: avoid !important; break-inside: avoid !important; page-break-after: auto !important; break-after: auto !important; }
+
+  th { background-color: #e4e4e4 !important; color: #000 !important; font-weight: 700 !important; border: 0.5pt solid #555 !important; padding: 3px 4px !important; font-size: 8pt !important; text-align: center !important; line-height: 1.25 !important; page-break-after: avoid !important; break-after: avoid !important; }
+  td { color: #000 !important; border: 0.5pt solid #999 !important; padding: 2.5px 4px !important; font-size: 8.5pt !important; line-height: 1.35 !important; vertical-align: middle !important; white-space: normal !important; word-break: break-word !important; overflow-wrap: break-word !important; }
+  tbody tr:hover td { background: transparent !important; }
+
+  .sticky-col, .cal-table .sticky-col, .cal-table th.sticky-col, .yearly-table .sticky-col { position: static !important; background-color: #e4e4e4 !important; box-shadow: none !important; z-index: auto !important; }
+
+  .cal-table { width: 100% !important; min-width: 0 !important; table-layout: fixed !important; font-size: 6.5pt !important; border-collapse: collapse !important; }
+  .cal-table th, .cal-table td { padding: 1.5px 0 !important; font-size: 6.5pt !important; text-align: center !important; border: 0.4pt solid #aaa !important; overflow: hidden !important; white-space: nowrap !important; }
+  .cal-table .sticky-col { width: 95px !important; min-width: 0 !important; max-width: 95px !important; text-align: left !important; padding-left: 2px !important; font-size: 6.5pt !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; background-color: #e4e4e4 !important; }
   
-  th, td { 
-    border: 1px solid #000 !important; 
-    color: black !important; 
-    padding: 4px 3px !important; 
-    font-size: 10px !important; 
-    white-space: normal !important; 
-    word-break: break-word; 
-    line-height: 1.2 !important; 
-  }
-  th { background-color: #eee !important; font-weight: bold !important; text-align: center !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cal-cell { width: auto !important; min-width: 0 !important; font-weight: 600 !important; font-size: 6.5pt !important; }
+  .day-header { font-size: 4.5pt !important; display: block !important; margin-bottom: 0 !important; line-height: 1 !important; }
+
+  .cal-cell.sun { background-color: #ffe8e8 !important; }
+  .cal-cell.sat { background-color: #eeeaff !important; }
+  .cal-cell.hol { background-color: #ddd    !important; }
+  .cal-cell.st-present { color: #005c38 !important; }
+  .cal-cell.st-absent  { color: #b71c1c !important; }
+  .cal-cell.st-leave   { color: #b35900 !important; }
+  .cal-cell.st-sick    { color: #4527a0 !important; }
+
+  .yearly-table { table-layout: auto !important; font-size: 7pt !important; }
+  .yearly-table th, .yearly-table td { font-size: 7pt !important; padding: 2px 2px !important; border: 0.5pt solid #888 !important; text-align: center !important; }
+  .yearly-table .sticky-col { width: 100px !important; min-width: 0 !important; max-width: 100px !important; text-align: left !important; font-size: 7pt !important; background-color: #e4e4e4 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
   
-  /* ปลดล็อคคอลัมน์แบบ Sticky */
-  .sticky-col, .cal-table th.sticky-col { position: static !important; box-shadow: none !important; background: transparent !important; }
+  .bg-t1  { background-color: #ede9ff !important; }
+  .bg-t2  { background-color: #e2f9f2 !important; }
+  .bg-sum { background-color: #fff3e6 !important; }
+
+  .stat-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 3px !important; margin-bottom: 4mm !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+  #missingStats { grid-template-columns: repeat(2, 1fr) !important; }
+  #attReportStats { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
+  .stat-card { border: 0.5pt solid #999 !important; border-radius: 3px !important; padding: 3px 5px !important; background: #fafafa !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+  .stat-card::after { display: none !important; }
+  .stat-label  { font-size: 7pt   !important; color: #555 !important; }
+  .stat-val    { font-size: 12pt  !important; color: #000 !important; line-height: 1.2 !important; }
+
+  .grade-circle { display: inline-flex !important; align-items: center !important; justify-content: center !important; background: none !important; color: #000 !important; border: 0.5pt solid #000 !important; border-radius: 50% !important; padding: 0 2px !important; font-size: 7.5pt !important; font-weight: 700 !important; width: auto !important; height: auto !important; min-width: 14px !important; }
+  .badge { display: inline !important; background: none !important; border: none !important; color: #000 !important; padding: 0 !important; font-size: 7.5pt !important; font-weight: 500 !important; }
+
+  .print-only { display: block !important; }
+
+  .print-signatures { display: flex !important; justify-content: space-around !important; margin-top: 16mm !important; padding: 0 !important; font-size: 9.5pt !important; color: #000 !important; page-break-before: avoid !important; break-before: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+  .print-signatures > div { text-align: center !important; flex: 1 !important; }
+
+  #monthlyReportTitle { font-size: 12pt !important; text-align: center !important; color: #000 !important; page-break-after: avoid !important; }
+  .print-info-bar, #printRatioInfo, #monthlyStatsPrint { display: block !important; font-size: 8pt !important; color: #333 !important; margin-bottom: 4px !important; border-bottom: 0.5pt solid #ccc !important; padding-bottom: 3px !important; page-break-after: avoid !important; }
   
-  /* ตารางเข้าเรียน (31 คอลัมน์) บีบให้ลง A4 Portrait */
-  .cal-table { width: 100% !important; }
-  .cal-table th, .cal-table td { padding: 2px 0px !important; font-size: 7.5px !important; text-align: center !important; }
-  .cal-table .sticky-col { width: auto !important; min-width: 0 !important; max-width: 90px !important; text-align: left !important; padding-left: 2px !important; }
-  .cal-cell { width: auto !important; min-width: auto !important; }
-  .day-header { font-size: 5px !important; }
-  .cal-cell.sun, .cal-cell.sat { background-color: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .cal-cell.hol { background-color: #ddd !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  
-  /* ตารางอื่นๆ และของประดับ */
-  .yearly-table th, .yearly-table td { font-size: 8px !important; padding: 2px 1px !important; }
-  .bar-wrap { display: none !important; } 
-  .grade-circle { border: none !important; background: transparent !important; color: black !important; padding: 0 !important; width: auto !important; height: auto !important; }
-  .badge { border: none !important; background: transparent !important; color: black !important; padding: 0 !important; font-size: 9px !important; }
-  .bg-t1, .bg-t2, .bg-sum { background: transparent !important; }
-  
-  /* ลายเซ็นท้ายกระดาษ */
-  .print-signatures { 
-    display: flex !important; 
-    justify-content: space-around !important; 
-    page-break-inside: avoid !important; 
-    margin-top: 30px !important; 
-    padding: 0 !important; 
-    font-size: 11px !important; 
-    color: black !important;
-  }
-  .print-signatures > div { text-align: center; }
+  .score-input { background: transparent !important; border: none !important; border-bottom: 0.5pt solid #999 !important; color: #000 !important; font-size: 8.5pt !important; width: 40px !important; text-align: center !important; padding: 0 !important; }
+  #progressBars { display: none !important; }
+  #progressPrintTable { display: block !important; }
+  #attendanceWrap { display: block !important; }
 }
 
 /* ===== RESPONSIVE ===== */
@@ -381,11 +394,15 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page active" id="page-dashboard">
         <div class="page-header">
           <div class="page-header-left"><h1>แดชบอร์ด</h1><p id="dashSubtitle">กำลังเชื่อมต่อข้อมูล...</p></div>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
         </div>
+        <div class="print-header-title" id="printTitleDashboard">ภาพรวมระบบ ArtGrade</div>
         <div class="grid-2-1">
           <div class="card">
             <div class="card-title"><span class="card-title-text">📈 ความคืบหน้าการส่งงาน (รายห้อง)</span></div>
             <div id="progressBars"></div>
+            <!-- Print version of progress (table form) -->
+            <div class="print-only" id="progressPrintTable"></div>
           </div>
           <div class="card">
             <div class="card-title">📝 ชิ้นงานและสอบล่าสุด</div>
@@ -435,6 +452,8 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           <div><span class="grade-circle grade-0" style="width:16px;height:16px;font-size:10px">ส</span> <b>สอบ:</b> <span id="label_ratio_final">30</span></div>
           <div><span class="grade-circle badge-gray" style="width:16px;height:16px;font-size:10px">ร</span> <b>รวมทั้งหมด:</b> <span id="label_ratio_total">100</span></div>
         </div>
+        <!-- สัดส่วนคะแนนสำหรับพิมพ์ -->
+        <div class="print-only" id="printRatioInfo" style="font-size:9pt;color:#333;margin-bottom:6px;"></div>
         
         <div class="table-wrap">
           <table>
@@ -464,7 +483,9 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-attendance">
         <div class="page-header">
           <div class="page-header-left"><h1>📍 เช็คชื่อเข้าเรียน</h1><p>บันทึกการเข้าเรียนรายคาบตามห้องเรียน</p></div>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
         </div>
+        <div class="print-header-title" id="printTitleAttendance">บันทึกการเข้าเรียน</div>
         <div class="card print-hide" style="margin-bottom:16px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
           <div><label>วันที่</label><input type="date" class="input" id="attDate" onchange="loadAttendanceList()"></div>
           <div><label>ห้องเรียน</label><select class="input" id="attClass" onchange="loadAttendanceList()"></select></div>
@@ -483,17 +504,21 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         </div>
 
         <!-- Normal Mode -->
-        <div id="attendanceWrap" style="display:none;" class="print-hide">
-          <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
+        <div id="attendanceWrap" style="display:none;">
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;" class="print-hide">
             <button class="btn btn-ghost btn-sm" onclick="setAllAttendance('present')">✅ มาครบทุกคน</button>
             <button class="btn btn-primary" onclick="saveAttendance()">💾 บันทึกเช็คชื่อ</button>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th style="width:60px;text-align:center">เลขที่</th><th>ชื่อ-นามสกุล</th><th style="width:240px;text-align:center">สถานะ</th></tr></thead>
+              <thead><tr><th style="width:60px;text-align:center">เลขที่</th><th>ชื่อ-นามสกุล</th><th style="width:240px;text-align:center" class="print-hide">สถานะ</th><th class="print-only" style="width:80px;text-align:center">สถานะ</th></tr></thead>
               <tbody id="attendanceTbody"></tbody>
             </table>
           </div>
+        </div>
+        <div class="print-signatures" id="printSigAttendance">
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
         </div>
       </div>
 
@@ -541,6 +566,8 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           </div>
         </div>
         <div class="stat-grid print-hide" id="monthlyStats" style="margin-top:16px; grid-template-columns: repeat(3, 1fr);"></div>
+        <!-- สถิติพิมพ์ -->
+        <div class="print-only" id="monthlyStatsPrint" style="display:flex;gap:12px;margin-bottom:6px;font-size:9pt;"></div>
         
         <div class="table-wrap" style="margin-top:16px;">
           <table><thead id="monthlyTableHeader"></thead><tbody id="monthlyTableBody"></tbody></table>
@@ -558,6 +585,7 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           <div class="page-header-left"><h1>🚨 ติดตามงานค้าง</h1><p>รายชื่อนักเรียนที่ยังไม่ได้ส่งงาน หรือยังไม่มีคะแนน</p></div>
           <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์รายชื่อ</button>
         </div>
+        <div class="print-header-title">รายงานงานค้างส่ง</div>
         <div class="card print-hide" style="margin-bottom:16px;">
           <label>เลือกห้องเรียน</label>
           <select class="input" id="missingClassFilter" onchange="renderMissingWork()" style="width:auto"><option value="">ทุกห้องเรียน</option></select>
@@ -566,9 +594,13 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         <div class="empty" id="missingEmpty" style="display:none;"><div class="empty-icon">🎉</div><div class="empty-title">เยี่ยมมาก! ไม่มีงานค้าง</div></div>
         <div class="table-wrap" id="missingTableWrap">
           <table>
-            <thead><tr><th style="width:60px; text-align:center;">เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th style="width:80px; text-align:center;">จำนวนที่ค้าง</th><th>รายการชิ้นงานที่ค้าง (หน่วย)</th></tr></thead>
+            <thead><tr><th style="width:50px; text-align:center;">เลขที่</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th style="width:60px; text-align:center;">ค้างทั้งหมด</th><th>รายการชิ้นงานที่ค้าง (หน่วย)</th></tr></thead>
             <tbody id="missingTableBody"></tbody>
           </table>
+        </div>
+        <div class="print-signatures">
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................หัวหน้าฝ่ายวิชาการ</div><div>(<span class="print_academic_name"></span>)</div></div>
         </div>
       </div>
 
@@ -576,8 +608,12 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-classes">
         <div class="page-header">
           <div class="page-header-left"><h1>ห้องเรียน</h1><p>จัดการห้องเรียนและข้อมูลนักเรียน</p></div>
-          <button class="btn btn-primary print-hide" onclick="openModal('addClassModal')">+ เพิ่มห้องเรียน</button>
+          <div class="print-hide" style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-primary" onclick="openModal('addClassModal')">+ เพิ่มห้องเรียน</button>
+          </div>
         </div>
+        <div class="print-header-title">รายการห้องเรียน</div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>ห้องเรียน</th><th>ระดับชั้น</th><th>จำนวนนักเรียน</th><th class="print-hide">จัดการ</th></tr></thead>
@@ -591,10 +627,12 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
         <div class="page-header">
           <div class="page-header-left"><h1>นักเรียน</h1><p>รายชื่อนักเรียนทั้งหมด (คลิกที่ชื่อเพื่อดูผลการเรียนรายบุคคล)</p></div>
           <div style="display:flex;gap:8px" class="print-hide">
+            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
             <button class="btn btn-ghost" onclick="openImportStudentModal()">📥 นำเข้าทีละห้อง</button>
             <button class="btn btn-primary" onclick="openModal('addStudentModal')">+ เพิ่มนักเรียน</button>
           </div>
         </div>
+        <div class="print-header-title">รายชื่อนักเรียน</div>
         <div class="toolbar print-hide">
           <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" class="input" id="studentSearch" placeholder="ค้นหาชื่อนักเรียน..." oninput="renderStudents()"></div>
           <select class="input" id="classFilter" onchange="renderStudents()" style="width:auto"><option value="">ทุกห้องเรียน</option></select>
@@ -611,8 +649,12 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
       <div class="page" id="page-assignments">
         <div class="page-header">
           <div class="page-header-left"><h1>ชิ้นงาน / การสอบ</h1><p>จัดการชิ้นงาน กิจกรรมการเรียน และการสอบ (ระบุเทอมและหน่วยได้)</p></div>
-          <button class="btn btn-primary print-hide" onclick="openModal('addAssignModal')">+ เพิ่มชิ้นงาน/สอบ</button>
+          <div class="print-hide" style="display:flex;gap:8px;">
+            <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ พิมพ์</button>
+            <button class="btn btn-primary" onclick="openModal('addAssignModal')">+ เพิ่มชิ้นงาน/สอบ</button>
+          </div>
         </div>
+        <div class="print-header-title">รายการชิ้นงาน/การสอบ</div>
         <div class="toolbar print-hide">
           <select class="input" id="assignCatFilter" onchange="renderAssignments()" style="width:auto">
             <option value="">ทุกประเภท</option><option value="homework">คะแนนเก็บ (หน่วย)</option><option value="midterm">สอบกลางปี</option><option value="final">สอบปลายปี</option>
@@ -625,13 +667,18 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
             <tbody id="assignmentsTable"></tbody>
           </table>
         </div>
+        <div class="print-signatures">
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
+        </div>
       </div>
 
       <!-- [PAGE: GRADING] -->
       <div class="page" id="page-grading">
         <div class="page-header">
           <div class="page-header-left"><h1>⚡ Speed Grading</h1><p>กรอกคะแนนอย่างรวดเร็ว — กด Enter เพื่อเลื่อนไปคนถัดไป</p></div>
+          <button class="btn btn-ghost btn-sm print-hide" onclick="window.print()">🖨️ พิมพ์</button>
         </div>
+        <div class="print-header-title" id="printTitleGrading">ตารางกรอกคะแนน</div>
         <div class="card print-hide" style="margin-bottom:16px">
           <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
             <div style="flex:1;min-width:180px"><label>เลือกห้องเรียน</label><select class="input" id="gradingClass" onchange="loadGradingAssignments()"></select></div>
@@ -650,10 +697,13 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           <div class="empty" id="gradingEmpty"><div class="empty-icon">⚡</div><div class="empty-title">เลือกห้องเรียนและชิ้นงาน</div></div>
           <div class="table-wrap" id="gradingTable" style="display:none">
             <table class="score-table">
-              <thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>คะแนน</th><th>%</th><th>URL ผลงาน</th><th>หมายเหตุ</th></tr></thead>
+              <thead><tr><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>คะแนน</th><th>%</th><th class="print-hide">URL ผลงาน</th><th class="print-hide">หมายเหตุ</th></tr></thead>
               <tbody id="gradingTbody"></tbody>
             </table>
           </div>
+        </div>
+        <div class="print-signatures">
+          <div><div style="margin-bottom:40px">ลงชื่อ.........................................................ครูประจำวิชา</div><div>(<span class="print_teacher_name"></span>)</div></div>
         </div>
       </div>
 
@@ -761,7 +811,6 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
     <div class="modal-header"><div class="modal-title">เพิ่มชิ้นงาน / สอบ</div><button class="modal-close" onclick="closeModal('addAssignModal')">✕</button></div>
     <div class="modal-body">
       <div class="form-group"><label>ชื่อชิ้นงาน หรือ ชื่อการสอบ</label><input type="text" class="input" id="new_assign_title" placeholder="เช่น วาดภาพจินตนาการ, สอบปลายภาค"></div>
-      
       <div class="form-row">
         <div class="form-group"><label>เทอม</label><select class="input" id="new_assign_term"><option value="1">เทอม 1</option><option value="2">เทอม 2</option></select></div>
         <div class="form-group">
@@ -771,12 +820,10 @@ label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px
           </select>
         </div>
       </div>
-      
       <div class="form-row">
         <div class="form-group" id="unitInputBox"><label>หน่วยการเรียนรู้ที่</label><input type="number" class="input" id="new_assign_unit" placeholder="เช่น 1" min="1" value="1"></div>
         <div class="form-group"><label>ห้องเรียน</label><select class="input" id="new_assign_class"><option value="ALL">ทุกห้อง</option></select></div>
       </div>
-      
       <div class="form-row">
         <div class="form-group"><label>คะแนนเต็มดิบ</label><input type="number" class="input" id="new_assign_max" value="20" min="1"></div>
         <div class="form-group"><label>กำหนดส่ง / วันที่สอบ</label><input type="date" class="input" id="new_assign_due"></div>
@@ -821,8 +868,47 @@ async function postAPI(action, payload) {
 }
 
 // =========================================
-// 2. UI HELPERS & NAVIGATION
+// 2. UI HELPERS & UTILITIES
 // =========================================
+function toast(msg, type='info') {
+  const el = document.createElement('div'); el.className = `toast ${type}`;
+  el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'💡'}</span> ${msg}`;
+  document.getElementById('toastWrap').appendChild(el); setTimeout(() => el.remove(), 3000);
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+let currentPage = 'dashboard';
+function navigate(page, navEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-'+page); if (el) el.classList.add('active');
+  if (navEl) { 
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+      navEl.classList.add('active'); 
+  }
+  const titles = { 
+      dashboard:'แดชบอร์ด', 'yearly-summary':'สรุปผลรายปี', classes:'ห้องเรียน',
+      students:'นักเรียน', assignments:'ชิ้นงาน', grading:'กรอกคะแนน',
+      summary:'สรุปคะแนนเทอม', monthly:'รายงานส่งงาน', attendance:'เช็คชื่อเข้าเรียน',
+      'attendance-report':'รายงานเข้าเรียน', missing:'ติดตามงานค้าง', settings:'ตั้งค่า'
+  };
+  document.getElementById('breadcrumb').innerHTML = `<b>${titles[page]||page}</b>`;
+  currentPage = page;
+  
+  if (page === 'dashboard') renderDashboard();
+  if (page === 'classes') renderClasses();
+  if (page === 'students') renderStudents();
+  if (page === 'assignments') renderAssignments();
+  if (page === 'summary') renderSummary();
+  if (page === 'yearly-summary') renderYearlySummary();
+  if (page === 'monthly') renderMonthlyReport();
+  if (page === 'attendance') loadAttendanceList();
+  if (page === 'attendance-report') renderAttendanceReport();
+  if (page === 'missing') renderMissingWork();
+}
+
 function updateSettingsUI() {
   document.getElementById('setting_director').value = DB.settings.director_name || '';
   document.getElementById('setting_academic').value = DB.settings.academic_name || '';
@@ -845,49 +931,6 @@ function updateSettingsUI() {
   document.querySelectorAll('.print_director_name').forEach(e => e.textContent = DB.settings.director_name || '............................');
 }
 
-function toast(msg, type='info') {
-  const el = document.createElement('div'); el.className = `toast ${type}`;
-  el.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':'💡'}</span> ${msg}`;
-  document.getElementById('toastWrap').appendChild(el); setTimeout(() => el.remove(), 3000);
-}
-
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
-
-let currentPage = 'dashboard';
-function navigate(page, navEl) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = document.getElementById('page-'+page); if (el) el.classList.add('active');
-  
-  if (navEl) { 
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
-      navEl.classList.add('active'); 
-  }
-  
-  const titles = { 
-      dashboard:'แดชบอร์ด', 'yearly-summary':'สรุปผลรายปี', classes:'ห้องเรียน',
-      students:'นักเรียน', assignments:'ชิ้นงาน', grading:'กรอกคะแนน',
-      summary:'สรุปคะแนนเทอม', monthly:'รายงานส่งงาน', attendance:'เช็คชื่อเข้าเรียน',
-      'attendance-report':'รายงานเข้าเรียน', missing:'ติดตามงานค้าง', settings:'ตั้งค่า'
-  };
-  document.getElementById('breadcrumb').innerHTML = `<b>${titles[page]||page}</b>`;
-  currentPage = page;
-  
-  // Call specific render functions
-  if (page === 'dashboard') renderDashboard();
-  if (page === 'classes') renderClasses();
-  if (page === 'students') renderStudents();
-  if (page === 'assignments') renderAssignments();
-  if (page === 'summary') renderSummary();
-  if (page === 'yearly-summary') renderYearlySummary();
-  if (page === 'monthly') renderMonthlyReport();
-  if (page === 'attendance') loadAttendanceList();
-  if (page === 'attendance-report') renderAttendanceReport();
-  if (page === 'missing') renderMissingWork();
-}
-
 function populateClassSelects() {
   const ids = ['classFilter','summaryClassFilter','yearlyClassFilter','assignClassFilter','new_stu_class','new_assign_class','import_stu_class','reportClass','attClass','attReportClass','missingClassFilter','gradingClass'];
   ids.forEach(id => {
@@ -900,8 +943,71 @@ function populateClassSelects() {
   });
 }
 
+function toggleUnitInput() {
+    const cat = document.getElementById('new_assign_cat').value;
+    document.getElementById('unitInputBox').style.display = cat === 'homework' ? 'block' : 'none';
+}
+
+function openImportStudentModal() { openModal('importStudentModal'); }
+
 // =========================================
-// 3. DATA LOGIC & CALCULATIONS
+// 3. INITIALIZATION & LIFECYCLE
+// =========================================
+window.onload = async () => {
+  toast('กำลังเชื่อมต่อฐานข้อมูล...', 'info');
+  const data = await fetchAPI('getAllData');
+  if (data.error) return toast('เชื่อมต่อล้มเหลว: ' + data.error, 'error');
+
+  DB.classes = (data.classes || []).map(c => ({...c, level: parseInt(c.level), room: parseInt(c.room)}));
+  DB.students = (data.students || []).map(s => ({...s, no: parseInt(s.no)}));
+  DB.assignments = (data.assignments || []).map(a => ({
+      ...a, 
+      maxScore: parseInt(a.maxScore), 
+      active: a.active === 'TRUE' || a.active === true,
+      term: a.term ? parseInt(a.term) : 1,
+      unit: a.unit ? parseInt(a.unit) : 1
+  }));
+  DB.attendance = data.attendance || [];
+  
+  DB.scores = {};
+  if (data.scores) {
+      data.scores.forEach(row => {
+          if (!DB.scores[row.student_id]) DB.scores[row.student_id] = {};
+          DB.scores[row.student_id][row.assignment_id] = { raw: parseInt(row.raw) || 0, url: row.url || '', note: row.note || '' };
+      });
+  }
+
+  if (data.settings && data.settings.length > 0) {
+    const setObj = {}; data.settings.forEach(row => { setObj[row.key] = row.value; });
+    DB.settings.director_name = setObj.director_name || '';
+    DB.settings.academic_name = setObj.academic_name || '';
+    DB.settings.teacher_name = setObj.teacher_name || '';
+    DB.settings.semester = parseInt(setObj.semester) || 1;
+    DB.settings.year = parseInt(setObj.year) || 2568;
+    DB.settings.ratio_work = parseInt(setObj.ratio_work) || 70;
+    DB.settings.ratio_final = parseInt(setObj.ratio_final) || 30;
+    
+    ['4','3.5','3','2.5','2','1.5','1'].forEach(g => {
+        const key = g.replace('.','_');
+        if(setObj[`g${key}`]) DB.settings.grade_thresholds[g] = parseInt(setObj[`g${key}`]);
+    });
+  }
+
+  updateSettingsUI();
+  populateClassSelects();
+  
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('attDate').value = todayStr;
+  document.getElementById('attReportMonth').value = todayStr.substring(0,7);
+  document.getElementById('reportMonth').value = todayStr.substring(0,7);
+  document.getElementById('new_assign_due').value = todayStr;
+
+  renderDashboard();
+  toast('โหลดข้อมูลสำเร็จ ✨', 'success');
+};
+
+// =========================================
+// 4. DATA LOGIC & CALCULATIONS
 // =========================================
 function getClass(id) { return DB.classes.find(c => c.id === id); }
 function getStudent(id) { return DB.students.find(s => s.id === id); }
@@ -963,8 +1069,7 @@ function calcStudentScore(studentId) {
     workRaw, workMax, workScaled, workDone, workTotal,
     finalRaw, finalMax, finalScaled, finalDone, finalTotal,
     totalRaw: workRaw + finalRaw, totalMax: workMax + finalMax, 
-    scaled: totalScaled, maxDisplay: rTotal, 
-    grade: grade, numGrade: grade
+    scaled: totalScaled, maxDisplay: rTotal, grade, numGrade: grade
   };
 }
 
@@ -977,10 +1082,9 @@ function classProgress(classId) {
 }
 
 // =========================================
-// 4. RENDER FUNCTIONS
+// 5. RENDER FUNCTIONS
 // =========================================
 
-// --- DASHBOARD ---
 function renderDashboard() {
   document.getElementById('displaySemester').textContent = `ปีการศึกษา ${DB.settings.year}`;
   document.getElementById('dashSubtitle').textContent = `ปีการศึกษา ${DB.settings.year} · พร้อมใช้งาน`;
@@ -999,6 +1103,20 @@ function renderDashboard() {
         </div>`;
   }).join('');
 
+  const printTable = document.getElementById('progressPrintTable');
+  if (printTable) {
+    printTable.innerHTML = `
+      <table style="width:100%;border-collapse:collapse;margin-top:8px;">
+        <thead><tr><th>ห้องเรียน</th><th>ความคืบหน้าการส่งงาน (%)</th></tr></thead>
+        <tbody>
+          ${DB.classes.map(cls => {
+            const pct = classProgress(cls.id);
+            return `<tr><td>${cls.name}</td><td style="text-align:center;font-weight:700">${pct}%</td></tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
   document.getElementById('recentAssignments').innerHTML = [...DB.assignments].reverse().slice(0,4).map(a => `
     <tr>
         <td>
@@ -1010,7 +1128,6 @@ function renderDashboard() {
   `).join('');
 }
 
-// --- CLASSES ---
 function renderClasses() {
   document.getElementById('classesTable').innerHTML = DB.classes.map(c => `
     <tr>
@@ -1024,7 +1141,6 @@ function renderClasses() {
   `).join('');
 }
 
-// --- STUDENTS ---
 function renderStudents() {
   const search = document.getElementById('studentSearch').value.toLowerCase();
   const classId = document.getElementById('classFilter').value;
@@ -1039,7 +1155,7 @@ function renderStudents() {
         <td>
             <div style="display:flex;align-items:center;gap:8px">
                 <div class="print-hide" style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--teal));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff">${s.firstName[0]}</div>
-                <div style="font-weight:500;color:var(--text);cursor:pointer" onclick="showStudentProfile('${s.id}')">${studentFullName(s)}</div>
+                <div style="font-weight:500;color:var(--text);cursor:pointer" onclick="window.showStudentProfileContent('${s.id}')">${studentFullName(s)}</div>
             </div>
         </td>
         <td><span class="badge badge-gray">${cls?.name||'-'}</span></td>
@@ -1047,7 +1163,7 @@ function renderStudents() {
         <td>${getGradeCircle(sc.grade)}</td>
         <td>
             <div style="display:flex;align-items:center;gap:6px">
-                <div class="bar-wrap" style="width:60px;height:5px">
+                <div class="bar-wrap print-hide" style="width:60px;height:5px">
                     <div class="bar-fill" style="width:${progressPct}%;background:var(--teal)"></div>
                 </div>
                 <span style="font-size:11px;color:var(--text2)">${sc.workDone+sc.finalDone}/${sc.workTotal+sc.finalTotal}</span>
@@ -1109,11 +1225,6 @@ function showStudentProfile(studentId) {
     </div>`;
 }
 
-function showStudentProfileContent(studentId) {
-    showStudentProfile(studentId);
-}
-
-// --- ASSIGNMENTS ---
 function renderAssignments() {
   const cat = document.getElementById('assignCatFilter').value;
   const classId = document.getElementById('assignClassFilter').value;
@@ -1133,12 +1244,6 @@ function renderAssignments() {
   `).join('');
 }
 
-function toggleUnitInput() {
-    const cat = document.getElementById('new_assign_cat').value;
-    document.getElementById('unitInputBox').style.display = cat === 'homework' ? 'block' : 'none';
-}
-
-// --- GRADING ---
 function loadGradingAssignments() {
   const classId = document.getElementById('gradingClass').value;
   const ga = document.getElementById('gradingAssignment');
@@ -1167,6 +1272,9 @@ function loadGradingTable() {
   document.getElementById('gradingInfo').style.display = 'flex';
   document.getElementById('gradingMax').textContent = a.maxScore;
   
+  const cls = getClass(classId);
+  document.getElementById('printTitleGrading').textContent = `ตารางกรอกคะแนน: ${a.title} — ห้อง ${cls?.name||''} (เต็ม ${a.maxScore} คะแนน)`;
+  
   let doneCount = 0;
   document.getElementById('gradingTbody').innerHTML = studs.map(s => {
     const sc = DB.scores[s.id]?.[assignId] || {};
@@ -1180,8 +1288,8 @@ function loadGradingTable() {
             <input class="score-input" type="number" value="${val}" min="0" max="${a.maxScore}" data-student="${s.id}" data-assign="${assignId}" onkeydown="if(event.key==='Enter'){event.preventDefault();let r=Array.from(document.querySelectorAll('.score-input'));let i=r.indexOf(this);if(i<r.length-1)r[i+1].focus();}">
         </td>
         <td style="font-size:12px;color:var(--text3)">${val!==''?Math.round(val/a.maxScore*100)+'%':'-'}</td>
-        <td><input class="input" type="text" value="${sc.url||''}" placeholder="URL ภาพ" style="font-size:11px;padding:5px"></td>
-        <td><input class="input" type="text" value="${sc.note||''}" placeholder="หมายเหตุ" style="font-size:11px;padding:5px"></td>
+        <td class="print-hide"><input class="input" type="text" value="${sc.url||''}" placeholder="URL ภาพ" style="font-size:11px;padding:5px"></td>
+        <td class="print-hide"><input class="input" type="text" value="${sc.note||''}" placeholder="หมายเหตุ" style="font-size:11px;padding:5px"></td>
       </tr>
     `;
   }).join('');
@@ -1190,12 +1298,12 @@ function loadGradingTable() {
   document.getElementById('gradingLeft').textContent = studs.length - doneCount;
 }
 
-// --- TERM SUMMARY ---
 let summarySort = { key:'scaled', asc:false };
-function sortSummary(key) {
+window.sortSummary = function(key) {
   if (summarySort.key === key) summarySort.asc = !summarySort.asc; else { summarySort.key = key; summarySort.asc = false; }
   renderSummary();
-}
+};
+
 function renderSummary() {
   const classId = document.getElementById('summaryClassFilter').value;
   const studs = (classId ? DB.students.filter(s => s.classId === classId) : DB.students).map(s => ({s, sc: calcStudentScore(s.id)}));
@@ -1216,11 +1324,14 @@ function renderSummary() {
   
   const selectedClass = classId ? DB.classes.find(c => c.id === classId)?.name : 'ทุกห้องเรียน';
   document.getElementById('printTitleTerm').innerHTML = `สรุปผลการเรียนรายเทอม: ห้อง ${selectedClass} <br><span style="font-size:12px;font-weight:normal">ภาคเรียนที่ ${DB.settings.semester} ปีการศึกษา ${DB.settings.year}</span>`;
+  
+  const printRatio = document.getElementById('printRatioInfo');
+  if (printRatio) printRatio.textContent = `สัดส่วนคะแนน — เก็บ: ${rWork} คะแนน | สอบ: ${rFinal} คะแนน | รวม: ${maxDisp} คะแนน | ภาคเรียนที่ ${DB.settings.semester} ปีการศึกษา ${DB.settings.year}`;
 
   document.getElementById('summaryTable').innerHTML = studs.map((d,i) => `
     <tr>
       <td style="color:var(--text3);text-align:center">${i+1}</td>
-      <td><div style="font-weight:500;cursor:pointer" onclick="showStudentProfile('${d.s.id}')">${studentFullName(d.s)}</div></td>
+      <td><div style="font-weight:500;cursor:pointer" onclick="window.showStudentProfileContent('${d.s.id}')">${studentFullName(d.s)}</div></td>
       <td><span class="badge badge-gray">${getClass(d.s.classId)?.name}</span></td>
       <td style="font-size:12px;color:var(--text2)">${d.sc.workRaw}/${d.sc.workMax}</td>
       <td><b style="color:var(--purple)">${d.sc.workScaled}</b></td>
@@ -1232,7 +1343,6 @@ function renderSummary() {
   `).join('');
 }
 
-// --- YEARLY SUMMARY (ปพ.5) ---
 function renderYearlySummary() {
     const classId = document.getElementById('yearlyClassFilter').value;
     const wrap = document.getElementById('yearlyTableWrap');
@@ -1311,7 +1421,6 @@ function renderYearlySummary() {
     }).join('');
 }
 
-// --- MISSING WORK ---
 function renderMissingWork() {
   const classId = document.getElementById('missingClassFilter').value;
   const tbody = document.getElementById('missingTableBody');
@@ -1338,12 +1447,11 @@ function renderMissingWork() {
         <td><div style="font-weight:500">${studentFullName(d.s)}</div></td>
         <td><span class="badge badge-gray">${getClass(d.s.classId)?.name}</span></td>
         <td style="text-align:center"><b style="color:var(--red);font-size:14px">${d.missing.length}</b></td>
-        <td style="line-height:1.6">${d.missing.map(a=>`<span class="badge badge-red">${a.title} ${a.cat==='homework'?`(น.${a.unit})`:''}</span>`).join(' ')}</td>
+        <td style="line-height:1.6;font-size:8.5pt">${d.missing.map(a=>`<span class="badge badge-red">${a.title} ${a.cat==='homework'?`(น.${a.unit})`:''}</span>`).join(' ')}</td>
     </tr>
   `).join('');
 }
 
-// --- MONTHLY REPORT (ASSIGNMENTS) ---
 function renderMonthlyReport() {
   const monthVal = document.getElementById('reportMonth').value, classId = document.getElementById('reportClass').value;
   if (!monthVal) return;
@@ -1361,16 +1469,18 @@ function renderMonthlyReport() {
   if (monthAssigns.length === 0) { 
       thead.innerHTML = `<th>ข้อมูลชิ้นงาน</th>`; 
       tbody.innerHTML = `<tr><td style="text-align:center;padding:40px;color:var(--text3)">ไม่มีชิ้นงานในเดือนนี้</td></tr>`; 
-      stats.innerHTML = ''; return; 
+      stats.innerHTML = ''; 
+      const pStat = document.getElementById('monthlyStatsPrint'); if(pStat) pStat.innerHTML = '';
+      return; 
   }
   
-  let maxTotal = 0, thHTML = `<th>เลขที่</th><th style="min-width:140px">ชื่อ-นามสกุล</th><th class="print-hide">ห้อง</th>`;
+  let maxTotal = 0, thHTML = `<th>เลขที่</th><th style="min-width:120px">ชื่อ-นามสกุล</th><th class="print-hide">ห้อง</th>`;
   monthAssigns.forEach(a => { 
       const label = a.cat === 'homework' ? `(หน่วย ${a.unit})` : '';
-      thHTML += `<th style="max-width:80px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.title}<br><span style="font-size:9px;color:var(--purple);font-weight:400">${label} เต็ม ${a.maxScore}</span></th>`; 
+      thHTML += `<th style="max-width:70px;white-space:normal;word-break:break-word;">${a.title}<br><span style="font-size:8px;color:var(--purple);font-weight:400">${label} /${a.maxScore}</span></th>`; 
       maxTotal += a.maxScore; 
   });
-  thHTML += `<th>รวมเดือนนี้<br><span style="font-size:9px;color:var(--purple);font-weight:400">(เต็ม ${maxTotal})</span></th>`;
+  thHTML += `<th>รวม<br><span style="font-size:8px;font-weight:400">/${maxTotal}</span></th>`;
   thead.innerHTML = `<tr>${thHTML}</tr>`;
   
   let expected = 0, actual = 0;
@@ -1389,7 +1499,7 @@ function renderMonthlyReport() {
            stuRaw += sc.raw; stuDone++; actual++; 
            tdHTML += `<td style="text-align:center"><b style="color:var(--teal)">${sc.raw}</b></td>`; 
        } else { 
-           tdHTML += `<td style="text-align:center"><span class="badge badge-red" style="font-size:8px">ขาด</span></td>`; 
+           tdHTML += `<td style="text-align:center;color:#c0392b;font-size:8pt;font-weight:600">ขาด</td>`; 
        }
     });
     tdHTML += `<td style="text-align:center"><b style="color:var(--purple);font-size:12px">${stuRaw}</b></td>`;
@@ -1397,11 +1507,13 @@ function renderMonthlyReport() {
   }).join('');
   
   stats.innerHTML = `<div class="stat-card orange"><div class="stat-label">ชิ้นงาน/สอบ เดือนนี้</div><div class="stat-val">${monthAssigns.length}</div></div><div class="stat-card purple"><div class="stat-label">ยอดส่งงาน/เข้าสอบ</div><div class="stat-val">${actual} <span style="font-size:14px;color:var(--text2)">/ ${expected}</span></div></div><div class="stat-card teal"><div class="stat-label">ส่งงานครบ</div><div class="stat-val">${expected>0?Math.round((actual/expected)*100):0}%</div></div>`;
+  
+  const pStat = document.getElementById('monthlyStatsPrint');
+  if (pStat) pStat.innerHTML = `<span>ชิ้นงานเดือนนี้: <b>${monthAssigns.length}</b></span> | <span>ส่งงานแล้ว: <b>${actual}/${expected}</b></span> | <span>อัตราส่งงาน: <b>${expected>0?Math.round((actual/expected)*100):0}%</b></span>`;
 }
 
-// =========================================
-// 5. ATTENDANCE SYSTEM
-// =========================================
+let currentAttRecords = {};
+
 function toggleHolidayMode() {
   const isHoliday = document.getElementById('attIsHoliday').checked;
   document.getElementById('holidayBox').style.display = isHoliday ? 'block' : 'none';
@@ -1418,10 +1530,17 @@ function getAttState(classId, dateStr) {
   return state;
 }
 
-let currentAttRecords = {};
 function loadAttendanceList() {
   const dateStr = document.getElementById('attDate').value, classId = document.getElementById('attClass').value;
   const wrap = document.getElementById('attendanceWrap'), holBox = document.getElementById('holidayBox'), isHolCheckbox = document.getElementById('attIsHoliday');
+  
+  if (dateStr && classId) {
+    const cls = getClass(classId);
+    const d = new Date(dateStr);
+    const dayNames = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    document.getElementById('printTitleAttendance').textContent = `บันทึกการเข้าเรียน — ห้อง ${cls?.name||''} วัน${dayNames[d.getDay()]}ที่ ${d.getDate()} เดือน ${['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][d.getMonth()]} พ.ศ. ${d.getFullYear()+543}`;
+  }
+
   if (!classId || !dateStr) { wrap.style.display = 'none'; holBox.style.display = 'none'; return; }
 
   const state = getAttState(classId, dateStr);
@@ -1431,25 +1550,28 @@ function loadAttendanceList() {
   toggleHolidayMode();
 
   const studs = DB.students.filter(s => s.classId === classId).sort((a,b)=>a.no-b.no);
+  const statusLabel = { present: 'มา', absent: 'ขาด', leave: 'ลา', sick: 'ป่วย' };
+  
   document.getElementById('attendanceTbody').innerHTML = studs.map(s => {
     const st = currentAttRecords[s.id] || '';
     return `
       <tr>
         <td style="text-align:center;color:var(--text3)">${s.no}</td>
         <td><div style="font-weight:500">${studentFullName(s)}</div></td>
-        <td>
+        <td class="print-hide">
           <div class="att-group" id="att_grp_${s.id}">
-            <button class="att-btn st-present ${st==='present'?'active':''}" onclick="markAtt('${s.id}','present')">มา</button>
-            <button class="att-btn st-absent ${st==='absent'?'active':''}" onclick="markAtt('${s.id}','absent')">ขาด</button>
-            <button class="att-btn st-leave ${st==='leave'?'active':''}" onclick="markAtt('${s.id}','leave')">ลา</button>
-            <button class="att-btn st-sick ${st==='sick'?'active':''}" onclick="markAtt('${s.id}','sick')">ป่วย</button>
+            <button class="att-btn st-present ${st==='present'?'active':''}" onclick="window.markAtt('${s.id}','present')">มา</button>
+            <button class="att-btn st-absent ${st==='absent'?'active':''}" onclick="window.markAtt('${s.id}','absent')">ขาด</button>
+            <button class="att-btn st-leave ${st==='leave'?'active':''}" onclick="window.markAtt('${s.id}','leave')">ลา</button>
+            <button class="att-btn st-sick ${st==='sick'?'active':''}" onclick="window.markAtt('${s.id}','sick')">ป่วย</button>
           </div>
         </td>
+        <td class="print-only" style="text-align:center;font-weight:700;color:${st==='present'?'#007a52':st==='absent'?'#c0392b':st==='leave'?'#c47000':st==='sick'?'#5830b0':'#888'}">${statusLabel[st] || '-'}</td>
       </tr>`;
   }).join('');
 }
 
-function markAtt(sId, status) {
+window.markAtt = function(sId, status) {
   currentAttRecords[sId] = status;
   const grp = document.getElementById(`att_grp_${sId}`);
   if(grp) {
@@ -1460,10 +1582,9 @@ function markAtt(sId, status) {
 
 function setAllAttendance(status) {
   const classId = document.getElementById('attClass').value;
-  DB.students.filter(s => s.classId === classId).forEach(s => markAtt(s.id, status));
+  DB.students.filter(s => s.classId === classId).forEach(s => window.markAtt(s.id, status));
 }
 
-// --- ATTENDANCE REPORT ---
 function renderAttendanceReport() {
   const monthStr = document.getElementById('attReportMonth').value, classId = document.getElementById('attReportClass').value;
   const wrap = document.getElementById('attReportTableWrap'), empty = document.getElementById('attReportEmpty'), statsEl = document.getElementById('attReportStats');
@@ -1478,7 +1599,7 @@ function renderAttendanceReport() {
   
   const selectedClass = DB.classes.find(c => c.id === classId)?.name;
   const monthName = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'][month-1];
-  document.getElementById('printTitleAttReport').innerHTML = `รายงานการเข้าเรียนประจำเดือน ${monthName} ${year+543} <br><span style="font-size:12px;font-weight:normal">ห้อง ${selectedClass}</span>`;
+  document.getElementById('printTitleAttReport').innerHTML = `รายงานการเข้าเรียนประจำเดือน ${monthName} ${year+543} ห้อง ${selectedClass}`;
 
   const attDict = {};
   for(let d=1; d<=daysInMonth; d++) attDict[`${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`] = { isHol: false, note: '', records: {} };
@@ -1488,7 +1609,7 @@ function renderAttendanceReport() {
     else if (r.student_id) attDict[r.date].records[r.student_id] = r.status;
   });
 
-  let thHTML = `<tr><th class="sticky-col" style="min-width:120px;text-align:left;">ชื่อ-นามสกุล</th>`;
+  let thHTML = `<tr><th class="sticky-col" style="min-width:110px;text-align:left;">ชื่อ-นามสกุล</th>`;
   for(let d=1; d<=daysInMonth; d++) {
     const dDate = new Date(year, month-1, d), dayOfWeek = dDate.getDay();
     const dStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -1496,13 +1617,13 @@ function renderAttendanceReport() {
     if(attDict[dStr].isHol) bgClass = 'hol';
     thHTML += `<th class="cal-cell ${bgClass}"><span class="day-header">${['อา','จ','อ','พ','พฤ','ศ','ส'][dayOfWeek]}</span>${d}</th>`;
   }
-  thHTML += `<th style="background:var(--surface2)">มา</th><th style="background:var(--surface2)">ขาด</th><th style="background:var(--surface2)">ลา</th><th style="background:var(--surface2)">ป่วย</th></tr>`;
+  thHTML += `<th>มา</th><th>ขาด</th><th>ลา</th><th>ป่วย</th></tr>`;
   document.getElementById('attReportThead').innerHTML = thHTML;
 
   let totalPres = 0, totalAbs = 0, totalLea = 0, totalSick = 0, totalExpected = 0;
   document.getElementById('attReportTbody').innerHTML = studs.map(s => {
     let sPres=0, sAbs=0, sLea=0, sSick=0;
-    let tdHTML = `<tr><td class="sticky-col"><div style="font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.no}. ${studentFullName(s)}</div></td>`;
+    let tdHTML = `<tr><td class="sticky-col" style="font-size:8pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;">${s.no}. ${studentFullName(s)}</td>`;
     
     for(let d=1; d<=daysInMonth; d++) {
       const dayOfWeek = new Date(year, month-1, d).getDay(), dStr = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -1517,11 +1638,11 @@ function renderAttendanceReport() {
         else if (st === 'absent') { cellText = 'ข'; cellClass += ' st-absent'; sAbs++; totalAbs++; }
         else if (st === 'leave') { cellText = 'ล'; cellClass += ' st-leave'; sLea++; totalLea++; }
         else if (st === 'sick') { cellText = 'ป'; cellClass += ' st-sick'; sSick++; totalSick++; }
-        else { cellText = '-'; cellClass += ' st-empty'; }
+        else { cellText = '-'; }
       }
-      tdHTML += `<td class="cal-cell ${cellClass}" title="${dayData.note||''}">${cellText}</td>`;
+      tdHTML += `<td class="cal-cell ${cellClass}">${cellText}</td>`;
     }
-    tdHTML += `<td style="font-weight:600;color:var(--teal)">${sPres}</td><td style="font-weight:600;color:var(--red)">${sAbs}</td><td style="font-weight:600;color:var(--orange)">${sLea}</td><td style="font-weight:600;color:var(--purple)">${sSick}</td></tr>`;
+    tdHTML += `<td style="font-weight:700;color:var(--teal)">${sPres}</td><td style="font-weight:700;color:var(--red)">${sAbs}</td><td style="font-weight:700;color:var(--orange)">${sLea}</td><td style="font-weight:700;color:var(--purple)">${sSick}</td></tr>`;
     return tdHTML;
   }).join('');
 
@@ -1530,7 +1651,6 @@ function renderAttendanceReport() {
   document.getElementById('st_tot_leave').innerHTML = `${totalLea} <span style="font-size:12px">ครั้ง</span>`;
   document.getElementById('st_tot_sick').innerHTML = `${totalSick} <span style="font-size:12px">ครั้ง</span>`;
 }
-
 
 // =========================================
 // 6. ACTION & SAVE FUNCTIONS
